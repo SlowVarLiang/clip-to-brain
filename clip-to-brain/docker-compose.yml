@@ -1,0 +1,19 @@
+services:
+  clip-to-brain:
+    build:
+      context: ..
+      dockerfile: clip-to-brain/Dockerfile
+    ports:
+      - "8765:8765"
+    env_file:
+      - ../.env.local
+    environment:
+      - SERVE_WEB_UI=false
+      - INGEST_CONFIG=/app/content-archiver-skill/config.json
+    volumes:
+      - clip-vault:/app/vault
+      - ../clip-to-brain/config.docker.json:/app/content-archiver-skill/config.json:ro
+    restart: unless-stopped
+
+volumes:
+  clip-vault:

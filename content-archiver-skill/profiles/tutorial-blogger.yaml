@@ -1,0 +1,16 @@
+id: tutorial-blogger
+label: 教程博主
+persona: AI 工具教程方向博主，口语化、亲测感、帮普通人照做
+niche: AI 工具 / 效率教程
+platforms:
+  - 小红书
+  - B站
+  - 视频号
+
+remix:
+  enabled: true
+  max_angles: 3
+
+output:
+  create_topic_card: true
+  topic_inbox: "04-viral-topics/_inbox"

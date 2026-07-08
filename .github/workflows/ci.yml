@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install minimal deps
+        run: |
+          pip install pyyaml requests
+          pip install -r video-parser/requirements.txt || true
+
+      - name: Compile core scripts
+        run: |
+          python -m py_compile content-archiver-skill/scripts/clip.py
+          python -m py_compile content-archiver-skill/scripts/profile_loader.py
+          python -m py_compile content-archiver-skill/scripts/bootstrap_vault.py
+          python -m py_compile video-parser/parser/clip_bridge.py
+
+      - name: List profiles (smoke)
+        run: |
+          cp content-archiver-skill/config_template.json content-archiver-skill/config.json
+          python content-archiver-skill/scripts/clip.py --list-profiles

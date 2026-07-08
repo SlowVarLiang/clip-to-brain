@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Lumis 丢链归档",
+  "version": "1.1.0",
+  "description": "刷视频/图文时一键 Clip-to-Brain：解析、转写、结构化笔记 + 二创角度",
+  "permissions": ["storage", "notifications", "activeTab", "contextMenus", "scripting"],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ],
+  "optional_host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Lumis 丢链归档"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.youtube.com/watch*",
+        "*://youtube.com/watch*",
+        "*://youtu.be/*",
+        "*://*.bilibili.com/video/*",
+        "*://bilibili.com/video/*",
+        "*://*.xiaohongshu.com/*",
+        "*://xiaohongshu.com/*",
+        "*://*.xhslink.com/*",
+        "*://xhslink.com/*",
+        "*://weixin.qq.com/sph/*",
+        "*://*.weixin.qq.com/sph/*",
+        "*://channels.weixin.qq.com/*",
+        "*://mp.weixin.qq.com/s/*",
+        "*://*.douyin.com/video/*",
+        "*://*.douyin.com/note/*",
+        "*://*.iesdouyin.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

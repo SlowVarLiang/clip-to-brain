@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lumis 丢链归档</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Clip-to-Brain</h1>
+      <p class="sub">小红书 / 视频号 / B站 / YouTube · 丢链即笔记</p>
+    </header>
+
+    <section class="card">
+      <label for="apiBase">API 地址</label>
+      <input id="apiBase" type="url" placeholder="http://127.0.0.1:8765" />
+
+      <p id="authHint" class="auth-hint">本地默认无需 API Key，留空即可</p>
+
+      <details id="apiKeySection" class="api-key-section">
+        <summary>高级：API Key（仅对外部署时需要）</summary>
+        <input id="apiKey" type="password" placeholder="留空" autocomplete="off" />
+      </details>
+
+      <div class="actions">
+        <button id="saveBtn" type="button">保存</button>
+        <button id="testBtn" type="button" class="secondary">测试连接</button>
+      </div>
+      <p id="status" class="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card">
+      <button id="ingestBtn" type="button" class="primary full">丢链归档当前页</button>
+      <p class="hint">或在页面右下角浮动按钮 / 右键菜单</p>
+      <p class="hint"><a id="dashLink" href="#" target="_blank" rel="noopener">打开 Dashboard →</a></p>
+    </section>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

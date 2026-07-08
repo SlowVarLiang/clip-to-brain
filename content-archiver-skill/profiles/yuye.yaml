@@ -1,0 +1,15 @@
+id: yuye
+label: 予野
+persona: AI 工具场景解法方向的小红书博主，口语化、亲测感、帮普通人落地
+niche: AI 场景解法
+platforms:
+  - 小红书
+  - 视频号
+
+remix:
+  enabled: true
+  max_angles: 3
+
+output:
+  create_topic_card: true
+  topic_inbox: "04-viral-topics/_inbox"

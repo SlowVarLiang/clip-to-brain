@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clip-to-Brain · 予野素材机</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2f3d;
+      --text: #e8eaed;
+      --muted: #9aa0a6;
+      --accent: #7c4dff;
+      --accent2: #448aff;
+      --ok: #34a853;
+      --warn: #fbbc04;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    header { margin-bottom: 1.5rem; }
+    header h1 { font-size: 1.6rem; font-weight: 700; }
+    header p { color: var(--muted); margin-top: 0.35rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+    .stat-num { font-size: 1.75rem; font-weight: 700; }
+    .stat-label { color: var(--muted); font-size: 0.85rem; }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+    input, textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.75rem;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    input:focus, textarea:focus { border-color: var(--accent2); }
+    button {
+      border: none; border-radius: 8px; padding: 0.65rem 1.25rem;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; align-items: center; }
+    .status { margin-top: 0.75rem; font-size: 0.9rem; color: var(--muted); white-space: pre-wrap; }
+    .status.ok { color: var(--ok); }
+    .status.err { color: #ea4335; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { text-align: left; padding: 0.55rem 0.35rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { color: var(--muted); font-weight: 500; }
+    .badge { display: inline-block; padding: 0.1rem 0.45rem; border-radius: 999px; font-size: 0.72rem; background: #2a3142; }
+    .badge.remix { background: #3d2e00; color: var(--warn); }
+    .badge.ref { background: #1e3a2f; color: #81c995; }
+    a { color: var(--accent2); text-decoration: none; }
+    footer { color: var(--muted); font-size: 0.8rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Clip-to-Brain · 予野素材机</h1>
+      <p>丢链 → 结构化笔记 → 二创角度 → 选题卡</p>
+    </header>
+
+    <div class="cards" id="summaryCards">
+      <div class="card"><div class="stat-num" id="sTotal">—</div><div class="stat-label">今日归档</div></div>
+      <div class="card"><div class="stat-num" id="sRemix">—</div><div class="stat-label">可二创</div></div>
+      <div class="card"><div class="stat-num" id="sRef">—</div><div class="stat-label">长期参考</div></div>
+      <div class="card"><div class="stat-num" id="sPeriod">—</div><div class="stat-label">近7日</div></div>
+    </div>
+
+    <section class="panel">
+      <label for="clipInput">粘贴链接或文字</label>
+      <textarea id="clipInput" placeholder="https://weixin.qq.com/sph/... 或长文"></textarea>
+      <div class="row">
+        <button id="clipBtn" type="button">丢链归档</button>
+        <button id="refreshBtn" type="button" style="background:#2a3142">刷新统计</button>
+      </div>
+      <div id="clipStatus" class="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel">
+      <h2 style="font-size:1rem;margin-bottom:0.75rem;">最近入库</h2>
+      <table>
+        <thead><tr><th>日期</th><th>评级</th><th>标题</th><th>路径</th></tr></thead>
+        <tbody id="itemsBody"><tr><td colspan="4">加载中…</td></tr></tbody>
+      </table>
+    </section>
+
+    <footer>API: <span id="apiBase"></span> · Dashboard 随 video-parser 服务运行</footer>
+  </div>
+
+  <script>
+    const API = location.origin;
+    document.getElementById("apiBase").textContent = API;
+
+    function badgeClass(rating) {
+      if ((rating || "").includes("可二创")) return "badge remix";
+      if ((rating || "").includes("长期参考")) return "badge ref";
+      return "badge";
+    }
+
+    async function loadStats() {
+      const res = await fetch(`${API}/clip/stats?days=7`);
+      const data = await res.json();
+      const s = data.summary || {};
+      document.getElementById("sTotal").textContent = s.today_total ?? 0;
+      document.getElementById("sRemix").textContent = s.today_remixable ?? 0;
+      document.getElementById("sRef").textContent = s.today_long_ref ?? 0;
+      document.getElementById("sPeriod").textContent = s.period_total ?? 0;
+
+      const tbody = document.getElementById("itemsBody");
+      tbody.innerHTML = "";
+      (data.items || []).slice(0, 20).forEach((item) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.date || ""}</td>
+          <td><span class="${badgeClass(item.value_rating)}">${item.value_rating || "—"}</span></td>
+          <td>${(item.title || "").slice(0, 42)}</td>
+          <td><code>${item.relative_path || ""}</code></td>`;
+        tbody.appendChild(tr);
+      });
+      if (!tbody.children.length) {
+        tbody.innerHTML = "<tr><td colspan='4'>暂无记录</td></tr>";
+      }
+    }
+
+    async function pollJob(jobId, statusEl) {
+      const started = Date.now();
+      while (Date.now() - started < 30 * 60 * 1000) {
+        await new Promise((r) => setTimeout(r, 2500));
+        const res = await fetch(`${API}/clip/${jobId}`);
+        const data = await res.json();
+        const st = data.status;
+        if (st === "QUEUEING" || st === "RUNNING") {
+          statusEl.textContent = "处理中…（解析 / 转写 / 萃取）";
+          continue;
+        }
+        const result = data.result || {};
+        if (st === "SUCCESS" && result.success !== false) {
+          let msg = `✅ 已入库\n📁 ${result.relative_path || ""}\n⭐ ${result.value_rating || ""}`;
+          if (result.remix_angles?.length) msg += `\n💡 ${result.remix_angles[0]}`;
+          if (result.topic_path) msg += `\n📝 ${result.topic_path}`;
+          statusEl.textContent = msg;
+          statusEl.className = "status ok";
+          loadStats();
+          return;
+        }
+        throw new Error(result.error || result.next_step || "归档失败");
+      }
+      throw new Error("超时");
+    }
+
+    document.getElementById("clipBtn").addEventListener("click", async () => {
+      const input = document.getElementById("clipInput").value.trim();
+      const statusEl = document.getElementById("clipStatus");
+      const btn = document.getElementById("clipBtn");
+      if (!input) return;
+      btn.disabled = true;
+      statusEl.className = "status";
+      statusEl.textContent = "提交中…";
+      try {
+        const res = await fetch(`${API}/clip`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ input, account: "予野YuYe" }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.job_id) throw new Error(data.error || data.detail || "提交失败");
+        await pollJob(data.job_id, statusEl);
+      } catch (err) {
+        statusEl.textContent = "❌ " + (err.message || err);
+        statusEl.className = "status err";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", loadStats);
+    loadStats().catch(() => {
+      document.getElementById("itemsBody").innerHTML = "<tr><td colspan='4'>无法连接 API，请先启动 parser.server</td></tr>";
+    });
+  </script>
+</body>
+</html>

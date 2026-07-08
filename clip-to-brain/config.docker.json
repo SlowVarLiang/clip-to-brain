@@ -1,0 +1,45 @@
+{
+  "lumis_root": "/app/vault",
+  "index_file": "_content_index.md",
+  "obsidian": {
+    "vault_name": "ClipBrain"
+  },
+  "clip": {
+    "default_profile": "default-creator",
+    "profiles_dir": "profiles"
+  },
+  "video_skill": {
+    "root": "../video-to-knowledge-skill",
+    "config": "../video-to-knowledge-skill/config.json"
+  },
+  "ingest": {
+    "long_video_minutes": 10,
+    "long_transcript_chars": 8000,
+    "long_segment_count": 200,
+    "value_extraction_prompt_short": "prompts/value_extraction_short.md",
+    "value_extraction_prompt_long": "prompts/value_extraction_long.md"
+  },
+  "routing_rules": [
+    {
+      "name": "视频链接默认",
+      "default": true,
+      "category": "03",
+      "subfolder": "VideoNotes",
+      "reason": "第三方视频/图文，对标拆解素材"
+    }
+  ],
+  "categories": {
+    "03": {
+      "path": "03-benchmark-accounts",
+      "label": "对标账号库",
+      "default_subfolder": "VideoNotes",
+      "subfolders": ["VideoNotes"]
+    },
+    "04": {
+      "path": "04-viral-topics",
+      "label": "爆款选题库",
+      "default_subfolder": "_inbox",
+      "subfolders": ["_inbox"]
+    }
+  }
+}

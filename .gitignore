@@ -1,0 +1,58 @@
+# Secrets & local
+.env
+.env.local
+.env*.local
+*.pem
+
+# Personal Obsidian vault (dev only)
+lumis/
+vault/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+video-parser/.venv/
+
+# Clip runtime artifacts
+content-archiver-skill/config.json
+content-archiver-skill/_last_*.json
+content-archiver-skill/_last_*.md
+content-archiver-skill/_ocr_temp/
+content-archiver-skill/_batch_out/
+content-archiver-skill/_test_*.json
+
+# Video parser local
+video-parser/.env
+video-parser/accounts.json
+
+# IDE
+.cursor/
+.vscode/
+*.swp
+
+# Unrelated Next.js resume app (not part of open source release)
+node_modules/
+.next/
+out/
+package-lock.json
+package.json
+components.json
+eslint.config.mjs
+next-env.d.ts
+next.config.ts
+postcss.config.mjs
+tailwind.config.ts
+tsconfig.json
+
+# Dev extract artifacts
+content-archiver-skill/_obsidian_extract.json
+content-archiver-skill/_workbuddy_extract.json
+
+# Misc
+_tmp_*
+*.log
+.DS_Store
+Thumbs.db
+clip-to-brain/_test_vault/

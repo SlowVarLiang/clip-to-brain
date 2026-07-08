@@ -1,0 +1,144 @@
+{
+  "lumis_root": "../vault",
+  "index_file": "_content_index.md",
+  "obsidian": {
+    "vault_name": "ClipBrain"
+  },
+  "clip": {
+    "default_profile": "default-creator",
+    "profiles_dir": "profiles"
+  },
+  "video_skill": {
+    "root": "../video-to-knowledge-skill",
+    "config": "../video-to-knowledge-skill/config.json"
+  },
+  "ingest": {
+    "long_video_minutes": 10,
+    "long_transcript_chars": 8000,
+    "long_segment_count": 200,
+    "value_extraction_prompt_short": "prompts/value_extraction_short.md",
+    "value_extraction_prompt_long": "prompts/value_extraction_long.md"
+  },
+  "h5_image": {
+    "temp_dir": "_ocr_temp",
+    "ocr_engine": "rapidocr",
+    "browser_fallback": true,
+    "url_patterns": [
+      "fe.xiaohongshu.com/ditto",
+      "xiaohongshu.com/crown"
+    ]
+  },
+  "routing_rules": [
+    {
+      "name": "小红书官方合规",
+      "url_contains": ["crown/community", "fe.xiaohongshu.com/ditto"],
+      "title_contains": ["社区规范", "社区公约", "原创保护", "踩雷", "不当营销"],
+      "category": "07",
+      "subfolder": "xiaohongshu",
+      "reason": "官方合规文档与营销红线"
+    },
+    {
+      "name": "小红书创作学院-运营",
+      "author_contains": ["小红书创作学院", "creator academy"],
+      "title_contains": ["涨粉", "粉丝", "调优", "公式", "变现", "粘性", "维护"],
+      "category": "04",
+      "subfolder": "platform-ops",
+      "reason": "官方账号运营方法论"
+    },
+    {
+      "name": "小红书创作学院-优质标准",
+      "author_contains": ["小红书创作学院", "creator academy"],
+      "title_contains": ["优质", "垂类", "爆款秘籍", "进阶指南"],
+      "category": "04",
+      "subfolder": "content-standards",
+      "reason": "官方优质内容标准"
+    },
+    {
+      "name": "视频链接默认",
+      "default": true,
+      "category": "03",
+      "subfolder": "VideoNotes",
+      "reason": "第三方视频/图文，对标拆解素材"
+    }
+  ],
+  "categories": {
+    "01": {
+      "path": "01-personal-experience",
+      "label": "个人经验库",
+      "default_subfolder": "project-retrospectives",
+      "subfolders": [
+        "project-retrospectives",
+        "lessons-learned",
+        "client-cases",
+        "personal-judgments"
+      ]
+    },
+    "02": {
+      "path": "02-industry-resources",
+      "label": "行业资料库",
+      "default_subfolder": "industry-news",
+      "subfolders": [
+        "trend-reports",
+        "tool-docs",
+        "business-models",
+        "industry-news"
+      ]
+    },
+    "03": {
+      "path": "03-benchmark-accounts",
+      "label": "对标账号库",
+      "default_subfolder": "_benchmark",
+      "subfolders": [
+        "VideoNotes",
+        "_benchmark",
+        "account-profiles"
+      ]
+    },
+    "04": {
+      "path": "04-viral-topics",
+      "label": "爆款选题库",
+      "default_subfolder": "tool-tutorials",
+      "subfolders": [
+        "platform-ops",
+        "content-standards",
+        "methodology",
+        "efficiency",
+        "money-making",
+        "pitfalls",
+        "tool-tutorials"
+      ]
+    },
+    "05": {
+      "path": "05-user-questions",
+      "label": "用户问题库",
+      "default_subfolder": "comments",
+      "subfolders": [
+        "comments",
+        "private-consulting",
+        "community",
+        "client-feedback"
+      ]
+    },
+    "06": {
+      "path": "06-product-info",
+      "label": "产品资料库",
+      "default_subfolder": "services",
+      "subfolders": [
+        "courses",
+        "services",
+        "pricing",
+        "conversion-scripts"
+      ]
+    },
+    "07": {
+      "path": "07-platform-rules",
+      "label": "平台规则库",
+      "default_subfolder": "xiaohongshu",
+      "subfolders": [
+        "xiaohongshu",
+        "douyin",
+        "channels"
+      ]
+    }
+  }
+}

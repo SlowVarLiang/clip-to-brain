@@ -1,0 +1,7 @@
+config.json
+_last_*.json
+_last_*.md
+_ocr_temp/
+_batch_out/
+_test_*.json
+_test_urls.json

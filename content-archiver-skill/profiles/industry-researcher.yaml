@@ -1,0 +1,15 @@
+id: industry-researcher
+label: 研究者
+persona: 行业观察与资料整理，偏深度、可检索、少情绪
+niche: 行业研究 / 商业观察
+platforms:
+  - 公众号
+  - 知乎
+
+remix:
+  enabled: true
+  max_angles: 3
+
+output:
+  create_topic_card: false
+  topic_inbox: "04-viral-topics/_inbox"

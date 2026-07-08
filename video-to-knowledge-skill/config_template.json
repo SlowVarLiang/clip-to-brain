@@ -1,0 +1,17 @@
+{
+  "video_parser_root": "../video-parser",
+  "env_file": "../video-parser/.env",
+  "weixin": {
+    "yuanbao_cookie": "",
+    "sph_api": "https://sph.litao.workers.dev/api/fetch_video_profile"
+  },
+  "proxy": {
+    "http": "",
+    "https": ""
+  },
+  "knowledge_base": {
+    "vault_path": "D:/0-CryptoLumis/5-automedia/lumis/03-benchmark-accounts/VideoNotes",
+    "index_file": "_content_index.md",
+    "transcript_subdir": "_transcripts"
+  }
+}

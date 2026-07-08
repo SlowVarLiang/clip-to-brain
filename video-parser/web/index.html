@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>视频去水印 · 逐字稿</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2f3d;
+      --text: #e8eaed;
+      --muted: #9aa0a6;
+      --accent: #4f8cff;
+      --accent-hover: #3a7aef;
+      --success: #34a853;
+      --error: #ea4335;
+      --timestamp: #fbbc04;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container { max-width: 820px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    header { text-align: center; margin-bottom: 2rem; }
+    header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.35rem; }
+    header p { color: var(--muted); font-size: 0.95rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+    textarea {
+      width: 100%;
+      min-height: 88px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.75rem;
+      font-size: 0.95rem;
+      resize: vertical;
+      outline: none;
+    }
+    textarea:focus { border-color: var(--accent); }
+    .actions { display: flex; gap: 0.75rem; margin-top: 1rem; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-secondary { background: #2a3142; color: var(--text); }
+    .btn-secondary:hover:not(:disabled) { background: #353d52; }
+    .btn-transcript {
+      background: linear-gradient(135deg, #7c4dff, #448aff);
+      color: #fff;
+    }
+    .btn-transcript:hover:not(:disabled) { filter: brightness(1.08); }
+    .result-meta { display: grid; gap: 0.35rem; font-size: 0.9rem; }
+    .result-meta span { color: var(--muted); }
+    .result-meta strong { color: var(--text); font-weight: 500; }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-ok { background: rgba(52,168,83,0.15); color: var(--success); }
+    .badge-err { background: rgba(234,67,53,0.15); color: var(--error); }
+    .badge-run { background: rgba(79,140,255,0.15); color: var(--accent); }
+    .hidden { display: none !important; }
+    .transcript-list { margin-top: 1rem; max-height: 480px; overflow-y: auto; }
+    .segment {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .segment:last-child { border-bottom: none; }
+    .segment-time {
+      flex-shrink: 0;
+      font-family: "SF Mono", Consolas, monospace;
+      font-size: 0.8rem;
+      color: var(--timestamp);
+      min-width: 130px;
+    }
+    .segment-text { flex: 1; font-size: 0.95rem; }
+    .full-text {
+      margin-top: 1rem;
+      padding: 0.85rem;
+      background: var(--bg);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 0.75rem;
+    }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-box {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background: rgba(234,67,53,0.1);
+      border: 1px solid rgba(234,67,53,0.3);
+      border-radius: 8px;
+      color: #ff8a80;
+      font-size: 0.88rem;
+    }
+    .video-link {
+      word-break: break-all;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>视频去水印 · 逐字稿</h1>
+      <p>粘贴分享链接解析无水印视频，一键转为带时间戳的逐字稿</p>
+    </header>
+
+    <div class="card">
+      <label for="input">分享链接 / 文案</label>
+      <textarea id="input" placeholder="粘贴抖音、快手、B站、微信视频号等分享链接…"></textarea>
+      <div class="actions">
+        <button class="btn-primary" id="btnParse">解析视频</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="parseResult">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+        <h2 style="font-size:1.05rem;">解析结果</h2>
+        <span class="badge badge-ok" id="parseBadge">成功</span>
+      </div>
+      <div class="result-meta" id="parseMeta"></div>
+      <div class="video-link" id="videoUrlDisplay"></div>
+      <div class="actions" style="margin-top:1rem;">
+        <button class="btn-transcript hidden" id="btnTranscript">转为逐字稿</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="transcriptResult">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+        <h2 style="font-size:1.05rem;">逐字稿</h2>
+        <span class="badge badge-run" id="transcriptBadge">识别中</span>
+      </div>
+      <div class="progress hidden" id="progress">
+        <div class="spinner"></div>
+        <span id="progressText">正在提交阿里云录音文件识别…</span>
+      </div>
+      <div class="error-box hidden" id="transcriptError"></div>
+      <div class="transcript-list hidden" id="segmentList"></div>
+      <div class="full-text hidden" id="fullText"></div>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let currentVideoUrl = "";
+    let pollTimer = null;
+
+    $("btnParse").addEventListener("click", parseVideo);
+    $("btnTranscript").addEventListener("click", startTranscript);
+    $("input").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) parseVideo();
+    });
+
+    async function parseVideo() {
+      const text = $("input").value.trim();
+      if (!text) return alert("请先粘贴链接");
+
+      $("btnParse").disabled = true;
+      $("btnParse").textContent = "解析中…";
+      resetTranscript();
+
+      try {
+        const res = await fetch("/parse", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text }),
+        });
+        const data = await res.json();
+        const result = Array.isArray(data) ? data[0] : data;
+        showParseResult(result);
+      } catch (err) {
+        showParseResult({ success: false, error: err.message, platform: "未知" });
+      } finally {
+        $("btnParse").disabled = false;
+        $("btnParse").textContent = "解析视频";
+      }
+    }
+
+    function showParseResult(r) {
+      $("parseResult").classList.remove("hidden");
+      const ok = r.success;
+      $("parseBadge").textContent = ok ? "成功" : "失败";
+      $("parseBadge").className = "badge " + (ok ? "badge-ok" : "badge-err");
+
+      $("parseMeta").innerHTML = ok
+        ? `<div><span>平台 </span><strong>${esc(r.platform)}</strong></div>
+           <div><span>标题 </span><strong>${esc(r.title || "—")}</strong></div>
+           <div><span>作者 </span><strong>${esc(r.author || "—")}</strong></div>`
+        : `<div class="error-box">${esc(r.error || "解析失败")}</div>`;
+
+      currentVideoUrl = r.video_url || "";
+      $("videoUrlDisplay").textContent = currentVideoUrl ? "视频地址：" + currentVideoUrl : "";
+
+      const btn = $("btnTranscript");
+      if (ok && currentVideoUrl) {
+        btn.classList.remove("hidden");
+      } else {
+        btn.classList.add("hidden");
+      }
+    }
+
+    function resetTranscript() {
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      $("transcriptResult").classList.add("hidden");
+      $("segmentList").innerHTML = "";
+      $("segmentList").classList.add("hidden");
+      $("fullText").classList.add("hidden");
+      $("transcriptError").classList.add("hidden");
+      $("progress").classList.add("hidden");
+    }
+
+    async function startTranscript() {
+      if (!currentVideoUrl) return alert("无可用视频地址");
+      resetTranscript();
+      $("transcriptResult").classList.remove("hidden");
+      $("progress").classList.remove("hidden");
+      $("transcriptBadge").textContent = "识别中";
+      $("transcriptBadge").className = "badge badge-run";
+      $("btnTranscript").disabled = true;
+
+      try {
+        const res = await fetch("/transcribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ video_url: currentVideoUrl }),
+        });
+        const data = await res.json();
+        if (!data.success || !data.job_id) {
+          throw new Error(data.error || "提交识别任务失败");
+        }
+        pollTranscript(data.job_id);
+      } catch (err) {
+        showTranscriptError(err.message);
+        $("btnTranscript").disabled = false;
+      }
+    }
+
+    function pollTranscript(jobId) {
+      let attempts = 0;
+      const maxAttempts = 720; // 约 1 小时
+
+      pollTimer = setInterval(async () => {
+        attempts++;
+        if (attempts > maxAttempts) {
+          clearInterval(pollTimer);
+          showTranscriptError("识别超时，请稍后重试");
+          $("btnTranscript").disabled = false;
+          return;
+        }
+
+        try {
+          const res = await fetch("/transcribe/" + jobId);
+          const data = await res.json();
+          const status = data.status;
+
+          if (status === "RUNNING" || status === "QUEUEING") {
+            $("progressText").textContent =
+              status === "QUEUEING" ? "排队中…" : "阿里云识别中，请稍候…";
+            return;
+          }
+
+          clearInterval(pollTimer);
+          $("progress").classList.add("hidden");
+          $("btnTranscript").disabled = false;
+
+          const result = data.result || {};
+          if (result.success) {
+            showTranscript(result);
+          } else {
+            showTranscriptError(result.error || status || "识别失败");
+          }
+        } catch (err) {
+          clearInterval(pollTimer);
+          showTranscriptError(err.message);
+          $("btnTranscript").disabled = false;
+        }
+      }, 5000);
+    }
+
+    function showTranscript(result) {
+      $("transcriptBadge").textContent = "完成";
+      $("transcriptBadge").className = "badge badge-ok";
+
+      const segments = result.segments || [];
+      if (segments.length) {
+        $("segmentList").classList.remove("hidden");
+        $("segmentList").innerHTML = segments.map((s) => `
+          <div class="segment">
+            <div class="segment-time">${esc(s.begin_time)} → ${esc(s.end_time)}</div>
+            <div class="segment-text">${esc(s.text)}</div>
+          </div>
+        `).join("");
+      }
+
+      if (result.full_text) {
+        $("fullText").classList.remove("hidden");
+        $("fullText").textContent = result.full_text;
+      } else if (!segments.length) {
+        showTranscriptError("识别完成，但未检测到语音内容");
+      }
+    }
+
+    function showTranscriptError(msg) {
+      $("progress").classList.add("hidden");
+      $("transcriptBadge").textContent = "失败";
+      $("transcriptBadge").className = "badge badge-err";
+      $("transcriptError").classList.remove("hidden");
+      $("transcriptError").textContent = msg;
+    }
+
+    function esc(s) {
+      const d = document.createElement("div");
+      d.textContent = s ?? "";
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+id: default-creator
+label: 创作者
+persona: 内容创作者，关注可落地的场景解法与选题灵感
+niche: 通用
+platforms:
+  - 小红书
+  - 视频号
+  - B站
+  - 公众号
+
+remix:
+  enabled: true
+  max_angles: 3
+
+output:
+  create_topic_card: true
+  topic_inbox: "04-viral-topics/_inbox"
