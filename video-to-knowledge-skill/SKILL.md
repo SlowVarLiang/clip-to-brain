@@ -208,7 +208,7 @@ copy config_template.json config.json
 2. 读取 JSON，运行价值萃取 Prompt
 3. 生成带 Front-matter 的 `note.md`
 4. `video_processor.py archive --note note.md --meta extract.json`
-5. 回复：「已入库 `D:/0-CryptoLumis/5-automedia/lumis/03-benchmark-accounts/VideoNotes/2026-07-05-如何制作一条高转化的视频.md`」
+5. 回复：「已入库 `D:/0-CryptoLumis/5-automedia/YuYe/03-benchmark-accounts/VideoNotes/2026-07-05-如何制作一条高转化的视频.md`」
 
 ---
 

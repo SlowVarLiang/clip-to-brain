@@ -19,7 +19,7 @@ description: >-
 set PYTHON=python
 set ARCHIVER=D:\0-CryptoLumis\5-automedia\content-archiver-skill
 set CONFIG=%ARCHIVER%\config.json
-set YuYe=D:\0-CryptoLumis\5-automedia\lumis
+set YuYe=D:\0-CryptoLumis\5-automedia\YuYe
 ```
 
 3. 若输入为**短视频/图文链接**，还需 `video-to-knowledge-skill` 可用（本地 Whisper 转写已配置）

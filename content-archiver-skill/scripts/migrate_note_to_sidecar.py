@@ -20,7 +20,7 @@ from transcript_utils import (  # noqa: E402
 )
 
 NOTE = Path(
-    r"D:\0-CryptoLumis\5-automedia\lumis\03-benchmark-accounts\VideoNotes"
+    r"D:\0-CryptoLumis\5-automedia\YuYe\03-benchmark-accounts\VideoNotes"
     r"\2026-07-06-零基礎30分鐘學會Codex-95%功能!【福利贈送】.md"
 )
 SIDECAR = NOTE.parent / "_transcripts" / "2026-07-06-零基礎30分鐘學會Codex-95%功能!【福利贈送】-transcript.md"
