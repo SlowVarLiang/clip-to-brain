@@ -412,8 +412,9 @@ def build_article_note(
         body_chunks.append(f"## 全文\n\n[[{sidecar_rel}]]")
 
     extraction_tag = "llm" if llm_used else "rule"
+    safe_title = title.replace('"', '\\"')
     return f"""---
-title: "{title.replace('"', '\\"')}"
+title: "{safe_title}"
 date: {date}
 source_url: "{source_url}"
 source_type: article
