@@ -158,6 +158,8 @@ Bot 里直接发链接，无需 webhook。
 # http://127.0.0.1:8765/clip/dashboard
 ```
 
+![Dashboard](../docs/assets/clip-to-brain-dashboard.png)
+
 Chrome 扩展：`browser-extension/` → 加载 unpacked → 刷视频页点「丢链归档」。
 
 ---

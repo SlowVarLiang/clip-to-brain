@@ -27,7 +27,7 @@
 
 <table>
 <tr>
-<td width="50%"><img src="docs/assets/clip-to-brain-dashboard.png" alt="Dashboard" /><br/><sub>Web Dashboard · 丢链归档 + 统计</sub></td>
+<td width="50%"><img src="docs/assets/clip-to-brain-dashboard.png" alt="Dashboard" /><br/><sub>Web Dashboard · 链接归档 + 统计</sub></td>
 <td width="50%"><img src="docs/assets/clip-to-brain-obsidian-note.png" alt="Obsidian Note" /><br/><sub>Obsidian 笔记 · 摘要 + 可写角度</sub></td>
 </tr>
 </table>

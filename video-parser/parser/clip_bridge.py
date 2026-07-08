@@ -88,7 +88,10 @@ def run_clip_profiles(*, config_path: Path | None = None) -> dict[str, Any]:
     default = default_profile_name(config)
     obs = config.get("obsidian") or {}
     profiles = []
+    hidden = {"yuye", "予野YuYe", "予野"}
     for pid in list_profiles(config):
+        if pid in hidden:
+            continue
         p = load_profile(pid, config)
         profiles.append(
             {
@@ -101,7 +104,7 @@ def run_clip_profiles(*, config_path: Path | None = None) -> dict[str, Any]:
             }
         )
     return {
-        "default_profile": default,
+        "default_profile": default if default not in hidden else "default-creator",
         "vault_name": obs.get("vault_name") or "YuYe",
         "YuYe_root": str(yuye_root_from_config(config)),
         "profiles": profiles,

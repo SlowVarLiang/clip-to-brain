@@ -6,152 +6,539 @@
   <title>Clip-to-Brain Dashboard</title>
   <style>
     :root {
-      --bg: #0d0d12; --sidebar: #12121a; --surface: #16161f; --surface2: #1c1c28;
-      --border: #2a2a3a; --text: #f0f0f5; --muted: #8b8b9e;
-      --accent: #8b5cf6; --accent2: #6366f1; --accent-glow: rgba(139,92,246,0.15);
-      --ok: #34d399; --warn: #fbbf24; --bili: #fb7299;
+      --bg: #0d0d12;
+      --sidebar: #0d0d12;
+      --surface: #16161d;
+      --surface2: #1c1c24;
+      --surface-hover: #22222c;
+      --border: rgba(255,255,255,0.06);
+      --border-light: rgba(255,255,255,0.08);
+      --text: #ffffff;
+      --muted: #a1a1aa;
+      --muted2: #71717a;
+      --accent: #8b5cf6;
+      --accent2: #a78bfa;
+      --accent-glow: rgba(139,92,246,0.18);
+      --accent-soft: rgba(139,92,246,0.14);
+      --ok: #34d399;
+      --warn: #fbbf24;
+      --bili: #fb7299;
+      --xhs: #ff2442;
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+    body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(1200px 600px at 75% -8%, rgba(139,92,246,0.07), transparent 50%), var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
     .app { display: flex; min-height: 100vh; }
-    .sidebar { width: 220px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 1.25rem 0.75rem; flex-shrink: 0; }
-    .brand { display: flex; align-items: center; gap: 0.6rem; padding: 0 0.75rem 1.25rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
-    .brand-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 10px; display: grid; place-items: center; font-size: 1.1rem; }
-    .brand-name { font-weight: 700; font-size: 0.95rem; }
-    .nav { list-style: none; flex: 1; }
-    .nav li { padding: 0.65rem 0.85rem; border-radius: 10px; color: var(--muted); font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.55rem; margin-bottom: 0.25rem; transition: background 0.15s; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 232px;
+      background: var(--sidebar);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 1.35rem 0.85rem;
+      flex-shrink: 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0 0.5rem 1.35rem;
+      margin-bottom: 0.5rem;
+    }
+    .brand-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(145deg, #8b5cf6 0%, #6d28d9 100%);
+      border-radius: 10px;
+      display: grid; place-items: center;
+      box-shadow: 0 4px 16px rgba(139,92,246,0.4);
+    }
+    .brand-icon svg { width: 20px; height: 20px; fill: #fff; stroke: none; }
+    .brand-name { font-weight: 700; font-size: 0.98rem; letter-spacing: -0.01em; }
+    .nav { list-style: none; flex: 1; padding: 0 0.15rem; }
+    .nav li {
+      padding: 0.7rem 0.9rem;
+      border-radius: 11px;
+      color: var(--muted);
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.2rem;
+      transition: all 0.18s ease;
+      position: relative;
+    }
     .nav li:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-    .nav li.active { background: linear-gradient(135deg, rgba(139,92,246,0.35), rgba(99,102,241,0.25)); color: var(--text); font-weight: 600; }
-    .nav li .ico { width: 1.1rem; text-align: center; }
-    .sidebar-user { margin-top: auto; padding: 0.85rem; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; }
-    .avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #4c1d95, var(--accent)); display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; }
-    .user-meta { font-size: 0.8rem; }
-    .user-meta strong { display: block; font-size: 0.85rem; }
-    .user-meta span { color: var(--muted); font-size: 0.72rem; }
-    .pro-badge { margin-left: auto; font-size: 0.65rem; padding: 0.15rem 0.45rem; border-radius: 999px; background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(139,92,246,0.35); }
+    .nav li.active {
+      background: rgba(139,92,246,0.22);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: inset 0 0 0 1px rgba(139,92,246,0.28);
+    }
+    .nav li.active::before { display: none; }
+    .nav li .ico {
+      width: 18px; height: 18px;
+      display: grid; place-items: center;
+      opacity: 0.75;
+      flex-shrink: 0;
+    }
+    .nav li .ico svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+    .nav li.active .ico { opacity: 1; color: #c4b5fd; }
+    .nav-bottom {
+      list-style: none;
+      padding: 0.75rem 0.15rem 0;
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+    }
+    .nav-bottom li {
+      padding: 0.7rem 0.9rem;
+      border-radius: 11px;
+      color: var(--muted);
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      transition: all 0.18s ease;
+    }
+    .nav-bottom li:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .nav-bottom li.active {
+      background: rgba(139,92,246,0.22);
+      color: #fff;
+      font-weight: 600;
+    }
+    .nav-bottom li .ico { width: 18px; height: 18px; display: grid; place-items: center; opacity: 0.75; }
+    .nav-bottom li .ico svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; }
+    .nav-bottom li.active .ico { opacity: 1; color: #c4b5fd; }
 
-    .main { flex: 1; padding: 1.75rem 2rem 3rem; overflow-x: hidden; }
-    .view { display: none; }
+    /* ── Main ── */
+    .main { flex: 1; padding: 2rem 2.25rem 2.5rem; overflow-x: hidden; background: var(--bg); }
+    .view { display: none; animation: fadeIn 0.25s ease; }
     .view.active { display: block; }
-    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; }
-    .page-head h1 { font-size: 1.65rem; font-weight: 700; letter-spacing: -0.02em; }
-    .page-head p { color: var(--muted); font-size: 0.9rem; margin-top: 0.35rem; max-width: 560px; }
-    .btn-ghost { border: 1px solid var(--border); background: var(--surface); color: var(--muted); border-radius: 10px; padding: 0.55rem 1rem; font-size: 0.85rem; cursor: pointer; }
-    .btn-ghost:hover { border-color: var(--accent); color: var(--text); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.15rem 1.25rem; overflow: hidden; }
-    .stat-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .stat-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--accent-glow); color: var(--accent); display: grid; place-items: center; }
-    .stat-label { color: var(--muted); font-size: 0.82rem; margin-top: 0.85rem; }
-    .stat-num { font-size: 2rem; font-weight: 700; margin-top: 0.15rem; }
-    .stat-hint { color: var(--muted); font-size: 0.75rem; margin-top: 0.5rem; }
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 1.85rem;
+    }
+    .page-head h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em; }
+    .page-head p { color: var(--muted); font-size: 0.875rem; margin-top: 0.4rem; line-height: 1.55; }
+    .btn-ghost {
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 0.55rem 1.05rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-ghost:hover { border-color: rgba(124,77,255,0.4); color: var(--text); }
 
-    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.35rem 1.5rem; margin-bottom: 1.5rem; }
-    .panel-title { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .archive-row { display: flex; gap: 0.75rem; align-items: stretch; }
-    .archive-row textarea { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 0.85rem 1rem; font-size: 0.92rem; outline: none; min-height: 48px; resize: none; font-family: inherit; }
-    .archive-row textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    .btn-primary { border: none; border-radius: 10px; padding: 0 1.5rem; min-width: 120px; font-size: 0.95rem; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .status { margin-top: 0.85rem; font-size: 0.88rem; color: var(--muted); white-space: pre-wrap; }
+    /* ── Stats ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.1rem;
+      margin-bottom: 1.35rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem 1.35rem 1.15rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124,77,255,0.3), transparent);
+    }
+    .stat-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.65rem; }
+    .stat-label { color: var(--muted); font-size: 0.82rem; font-weight: 500; }
+    .stat-num {
+      font-size: 2.35rem;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      margin: 0 0 0.45rem;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .sparkline { opacity: 0.85; flex-shrink: 0; filter: drop-shadow(0 0 5px rgba(139,92,246,0.3)); }
+    .stat-hint { color: var(--muted2); font-size: 0.73rem; line-height: 1.4; }
+
+    /* ── Panels ── */
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.35rem 1.5rem;
+      margin-bottom: 1.35rem;
+      box-shadow: var(--shadow);
+    }
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--text);
+    }
+    .panel-sub { color: var(--muted); font-size: 0.78rem; margin: -0.55rem 0 1rem; line-height: 1.5; }
+    .panel-title .ico { color: var(--accent2); display: grid; place-items: center; }
+    .panel-title .ico svg { width: 16px; height: 16px; stroke: var(--accent2); fill: none; stroke-width: 2; stroke-linecap: round; }
+
+    .archive-row {
+      display: flex;
+      gap: 0.85rem;
+      align-items: stretch;
+    }
+    .archive-row input,
+    .archive-row textarea {
+      flex: 1;
+      background: #0d0e16;
+      border: 1px solid var(--border-light);
+      border-radius: 11px;
+      color: var(--text);
+      padding: 0.9rem 1.1rem;
+      font-size: 0.875rem;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .archive-row textarea { min-height: 50px; resize: none; line-height: 1.45; }
+    .archive-row input:focus,
+    .archive-row textarea:focus {
+      border-color: rgba(124,77,255,0.55);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .archive-row input::placeholder,
+    .archive-row textarea::placeholder { color: var(--muted2); }
+    .btn-primary {
+      border: none;
+      border-radius: 11px;
+      padding: 0 1.65rem;
+      min-width: 128px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #8b5cf6 100%);
+      background-size: 200% 100%;
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(139,92,246,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(124,77,255,0.45);
+    }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+    .status { margin-top: 0.9rem; font-size: 0.85rem; color: var(--muted); white-space: pre-wrap; line-height: 1.55; }
     .status.ok { color: var(--ok); }
     .status.err { color: #f87171; }
 
-    .toolbar { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-bottom: 1rem; align-items: center; }
-    .search { flex: 1; min-width: 200px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); padding: 0.65rem 1rem; font-size: 0.88rem; outline: none; }
-    .search:focus { border-color: var(--accent); }
-    .chip { border: 1px solid var(--border); background: var(--bg); color: var(--muted); border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.78rem; cursor: pointer; }
-    .chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.1rem;
+    }
+    .panel-head h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .panel-head a {
+      color: var(--accent2);
+      font-size: 0.8rem;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .panel-head a:hover { text-decoration: underline; }
 
-    .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-    .panel-head h2 { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
-    .archive-list { display: flex; flex-direction: column; gap: 0.65rem; }
-    .archive-item { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; }
-    .archive-item:hover { border-color: rgba(139,92,246,0.4); }
-    .thumb { width: 112px; height: 64px; border-radius: 8px; flex-shrink: 0; background: linear-gradient(135deg, #1e1b4b, #4c1d95); display: grid; place-items: center; font-size: 1.5rem; position: relative; overflow: hidden; }
-    .thumb-dur { position: absolute; bottom: 4px; right: 6px; font-size: 0.65rem; color: #fff; z-index: 1; background: rgba(0,0,0,0.5); padding: 0.1rem 0.35rem; border-radius: 4px; }
-    .item-body { flex: 1; min-width: 0; }
-    .item-title { font-size: 0.92rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.35rem; }
-    .item-path { font-size: 0.72rem; color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .item-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.35rem 0; }
-    .tag { font-size: 0.68rem; padding: 0.12rem 0.45rem; border-radius: 999px; font-weight: 500; }
-    .tag.remix { background: rgba(139,92,246,0.25); color: #c4b5fd; }
-    .tag.ref { background: rgba(52,211,153,0.15); color: #6ee7b7; }
-    .tag.neutral { background: #2a2a3a; color: var(--muted); }
-    .tag.topic { background: rgba(99,102,241,0.2); color: #a5b4fc; }
-    .tag.pending { background: rgba(251,191,36,0.15); color: var(--warn); }
-    .item-meta { display: flex; align-items: center; gap: 0.65rem; font-size: 0.75rem; color: var(--muted); }
+    /* ── Archive list ── */
+    .archive-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .archive-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .archive-item:hover {
+      border-color: rgba(124,77,255,0.28);
+      background: var(--surface-hover);
+    }
+    .thumb {
+      width: 120px; height: 68px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #312e81 0%, #581c87 40%, #7c2d12 100%);
+    }
+    .thumb-inner {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, rgba(124,77,255,0.15) 0%, transparent 50%),
+                  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.25)' stroke-width='1.5'%3E%3Cpolygon points='5 3 19 12 5 21 5 3'/%3E%3C/svg%3E") center/28px no-repeat;
+    }
+    .thumb-dur {
+      position: absolute; bottom: 5px; right: 7px;
+      font-size: 0.62rem; color: #fff; z-index: 2;
+      background: rgba(0,0,0,0.72);
+      padding: 0.12rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+    .item-body { flex: 1; min-width: 0; padding: 0.1rem 0; }
+    .item-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.01em;
+    }
+    .item-path {
+      font-size: 0.7rem;
+      color: var(--muted2);
+      font-family: ui-monospace, "Cascadia Code", monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 0.35rem;
+    }
+    .item-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.4rem; }
+    .tag {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .tag.remix { background: rgba(139,92,246,0.2); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.18); }
+    .tag.ref { background: rgba(52,211,153,0.12); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.15); }
+    .tag.xhs { background: rgba(255,36,66,0.14); color: #fb7185; border: 1px solid rgba(255,36,66,0.22); }
+    .tag.bili-tag { background: rgba(251,114,153,0.12); color: #fb7299; border: 1px solid rgba(251,114,153,0.18); }
+    .tag.neutral { background: rgba(255,255,255,0.06); color: var(--muted); }
+    .tag.topic { background: rgba(255,255,255,0.06); color: #a1a1aa; border: 1px solid rgba(255,255,255,0.08); }
+    .tag.pending { background: rgba(251,191,36,0.12); color: #fcd34d; }
+    .item-meta { display: flex; align-items: center; gap: 0.5rem; font-size: 0.73rem; color: var(--muted); }
+    .platform { display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 600; }
     .platform.bili { color: var(--bili); }
-    .item-time { margin-left: auto; flex-shrink: 0; font-size: 0.78rem; color: var(--muted); }
+    .platform-dot {
+      width: 14px; height: 14px;
+      border-radius: 4px;
+      background: var(--bili);
+      display: inline-grid; place-items: center;
+      font-size: 0.55rem; color: #fff; font-weight: 800;
+    }
+    .item-time { flex-shrink: 0; font-size: 0.78rem; color: var(--muted2); min-width: 52px; text-align: right; }
+    .item-menu {
+      color: var(--muted2);
+      padding: 0.35rem 0.5rem;
+      cursor: default;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      line-height: 1;
+      opacity: 0.6;
+    }
+    .archive-item:hover .item-menu { opacity: 1; }
 
-    .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-    .topic-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem; }
-    .topic-card h3 { font-size: 0.95rem; margin-bottom: 0.5rem; line-height: 1.4; }
-    .topic-card p { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.75rem; }
+    /* ── Toolbar / library ── */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.1rem; align-items: center; }
+    .search {
+      flex: 1; min-width: 220px;
+      background: #0d0e16;
+      border: 1px solid var(--border-light);
+      border-radius: 11px;
+      color: var(--text);
+      padding: 0.7rem 1rem;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .search:focus { border-color: rgba(124,77,255,0.45); }
+    .chip {
+      border: 1px solid var(--border-light);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 0.38rem 0.9rem;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: rgba(124,77,255,0.35); color: var(--text); }
+    .chip.active {
+      border-color: rgba(124,77,255,0.5);
+      color: var(--accent2);
+      background: var(--accent-soft);
+    }
 
-    .settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-    .profile-card { background: var(--surface2); border: 2px solid var(--border); border-radius: 12px; padding: 1.1rem; cursor: pointer; transition: border-color 0.15s; }
-    .profile-card:hover { border-color: rgba(139,92,246,0.5); }
-    .profile-card.selected { border-color: var(--accent); background: rgba(139,92,246,0.08); }
-    .profile-card h3 { font-size: 0.95rem; margin-bottom: 0.35rem; }
-    .profile-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.45; }
-    .profile-card .meta { font-size: 0.72rem; color: var(--accent); margin-top: 0.65rem; }
-    .info-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
-    .info-row span:last-child { color: var(--muted); font-family: ui-monospace, monospace; font-size: 0.78rem; max-width: 60%; text-align: right; word-break: break-all; }
+    /* ── Topics grid ── */
+    .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+    .topic-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem;
+      transition: border-color 0.15s;
+    }
+    .topic-card:hover { border-color: rgba(124,77,255,0.3); }
+    .topic-card h3 { font-size: 0.92rem; margin-bottom: 0.45rem; line-height: 1.45; font-weight: 600; }
+    .topic-card p { font-size: 0.75rem; color: var(--muted2); margin-bottom: 0.75rem; font-family: ui-monospace, monospace; }
 
-    .empty { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
-    footer { color: var(--muted); font-size: 0.75rem; margin-top: 1.5rem; }
+    /* ── Settings ── */
+    .settings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(272px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+    .profile-card {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 1.2rem;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .profile-card:hover { border-color: rgba(124,77,255,0.35); transform: translateY(-1px); }
+    .profile-card.selected {
+      border-color: var(--accent);
+      background: linear-gradient(145deg, rgba(124,77,255,0.1) 0%, rgba(124,77,255,0.03) 100%);
+      box-shadow: 0 0 0 1px rgba(124,77,255,0.2);
+    }
+    .profile-card h3 { font-size: 0.92rem; margin-bottom: 0.4rem; font-weight: 600; }
+    .profile-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+    .profile-card .meta { font-size: 0.7rem; color: var(--accent2); margin-top: 0.7rem; font-weight: 500; }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      gap: 1rem;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-row span:first-child { color: var(--muted); flex-shrink: 0; }
+    .info-row span:last-child { color: var(--text); font-family: ui-monospace, monospace; font-size: 0.76rem; text-align: right; word-break: break-all; }
 
+    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 0.875rem; }
+    footer { color: var(--muted2); font-size: 0.72rem; margin-top: 1.75rem; }
+
+    @media (max-width: 960px) {
+      .stats { grid-template-columns: 1fr; }
+    }
     @media (max-width: 768px) {
       .sidebar { display: none; }
       .main { padding: 1.25rem; }
-      .stats { grid-template-columns: 1fr; }
       .archive-row { flex-direction: column; }
-      .btn-primary { width: 100%; padding: 0.85rem; }
-      .thumb { width: 80px; height: 48px; }
+      .btn-primary { width: 100%; min-height: 48px; }
+      .thumb { width: 96px; height: 54px; }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="brand"><div class="brand-icon">🧠</div><div class="brand-name">Clip-to-Brain</div></div>
-      <ul class="nav" id="nav">
-        <li class="active" data-view="dashboard"><span class="ico">▦</span> 仪表盘</li>
-        <li data-view="library"><span class="ico">📁</span> 归档库</li>
-        <li data-view="topics"><span class="ico">✨</span> 选题卡</li>
-        <li data-view="settings"><span class="ico">⚙</span> 设置</li>
-      </ul>
-      <div class="sidebar-user">
-        <div class="avatar">Yu</div>
-        <div class="user-meta"><strong>YuYe</strong><span>AI 创作者</span></div>
-        <span class="pro-badge">Pro</span>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2l1.8 5.5L19 9l-5.2 1.5L12 16l-1.8-5.5L5 9l5.2-1.5L12 2zM19 13l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"/></svg>
+        </div>
+        <div class="brand-name">Clip-to-Brain</div>
       </div>
+      <ul class="nav" id="nav">
+        <li class="active" data-view="dashboard"><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span> 仪表盘</li>
+        <li data-view="library" data-filter="all"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7z"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></span> 归档管理</li>
+        <li data-view="library" data-filter="remix"><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M19 14l.75 2.25L22 17l-2.25.75L19 20l-.75-2.25L16 17l2.25-.75L19 14z"/></svg></span> 可二创</li>
+        <li data-view="library" data-filter="ref"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 4h11a2 2 0 012 2v14l-4-3-4 3-4-3-4 3V6a2 2 0 012-2z"/></svg></span> 长期参考</li>
+        <li data-view="topics"><span class="ico"><svg viewBox="0 0 24 24"><path d="M7 7h.01M7 3h5c1.1 0 2 .9 2 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg></span> 标签管理</li>
+      </ul>
+      <ul class="nav-bottom" id="navBottom">
+        <li data-view="settings"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></span> 设置</li>
+      </ul>
     </aside>
 
     <main class="main">
       <!-- Dashboard -->
       <div id="view-dashboard" class="view active">
         <div class="page-head">
-          <div><h1>Clip-to-Brain Dashboard</h1><p>一站式视频内容归档与灵感管理中心</p></div>
-          <button type="button" class="btn-ghost" id="refreshBtn">↻ 刷新数据</button>
+          <div>
+            <h1>Clip-to-Brain Dashboard</h1>
+            <p>一站式智能内容归档与知识管理中心</p>
+          </div>
+          <button type="button" class="btn-ghost" id="refreshBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 11-2.64-6.36"/><path d="M21 3v6h-6"/></svg> 刷新数据</button>
         </div>
         <div class="stats">
-          <div class="stat-card"><div class="stat-top"><div class="stat-icon">📥</div></div><div class="stat-label">今日归档</div><div class="stat-num" id="sTotal">—</div><div class="stat-hint">今日新增入库笔记</div></div>
-          <div class="stat-card"><div class="stat-top"><div class="stat-icon">✨</div></div><div class="stat-label">可二创</div><div class="stat-num" id="sRemix">—</div><div class="stat-hint">适合二次创作的内容</div></div>
-          <div class="stat-card"><div class="stat-top"><div class="stat-icon">📚</div></div><div class="stat-label">长期参考</div><div class="stat-num" id="sRef">—</div><div class="stat-hint">近 7 日共 <span id="sPeriod">—</span> 条</div></div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-label">今日归档</div>
+              <svg class="sparkline" width="72" height="32" viewBox="0 0 80 36"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient></defs><path d="M0 28 L12 24 L24 26 L36 16 L52 20 L80 8 L80 36 L0 36 Z" fill="url(#g1)"/><path d="M0 28 L12 24 L24 26 L36 16 L52 20 L80 8" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-num" id="sTotal">—</div>
+            <div class="stat-hint">今日新增的视频归档数量</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-label">可二创</div>
+              <svg class="sparkline" width="72" height="32" viewBox="0 0 80 36"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient></defs><path d="M0 20 L14 16 L28 22 L42 12 L58 10 L80 14 L80 36 L0 36 Z" fill="url(#g2)"/><path d="M0 20 L14 16 L28 22 L42 12 L58 10 L80 14" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-num" id="sRemix">—</div>
+            <div class="stat-hint">可用于二次创作的视频</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top">
+              <div class="stat-label">长期参考</div>
+              <svg class="sparkline" width="72" height="32" viewBox="0 0 80 36"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35"/><stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/></linearGradient></defs><path d="M0 24 L12 18 L26 20 L40 10 L54 14 L80 6 L80 36 L0 36 Z" fill="url(#g3)"/><path d="M0 24 L12 18 L26 20 L40 10 L54 14 L80 6" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="stat-num" id="sRef">—</div>
+            <div class="stat-hint">适合长期参考的视频</div>
+          </div>
         </div>
         <section class="panel">
-          <div class="panel-title">🔗 丢链归档</div>
+          <div class="panel-title"><span class="ico"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></span> 链接归档</div>
+          <p class="panel-sub">粘贴网页链接，快速归档到 Clip-to-Brain</p>
           <div class="archive-row">
-            <textarea id="clipInput" rows="1" placeholder="粘贴视频号 / 小红书 / B站 / 抖音链接，或长文正文…"></textarea>
+            <input type="text" id="clipInput" placeholder="https://www.bilibili.com/video/BVxxxxxxxxx" />
             <button id="clipBtn" type="button" class="btn-primary">立即归档</button>
           </div>
           <div id="clipStatus" class="status" aria-live="polite"></div>
         </section>
         <section class="panel">
-          <div class="panel-head"><h2>🕐 最近归档</h2></div>
+          <div class="panel-head">
+            <h2><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>最近归档</h2>
+            <a href="#" id="viewAllLink">查看全部 &gt;</a>
+          </div>
           <div class="archive-list" id="recentList"><div class="empty">加载中…</div></div>
         </section>
       </div>
@@ -159,8 +546,8 @@
       <!-- Library -->
       <div id="view-library" class="view">
         <div class="page-head">
-          <div><h1>归档库</h1><p>浏览 YuYe 知识库中所有已归档内容，支持搜索与评级筛选</p></div>
-          <button type="button" class="btn-ghost" id="libraryRefresh">↻ 刷新</button>
+          <div><h1 id="libraryTitle">归档管理</h1><p>浏览已归档的视频与灵感内容</p></div>
+          <button type="button" class="btn-ghost" id="libraryRefresh">🕐 刷新</button>
         </div>
         <div class="toolbar">
           <input type="search" class="search" id="librarySearch" placeholder="搜索标题、作者、路径…" />
@@ -174,8 +561,8 @@
       <!-- Topics -->
       <div id="view-topics" class="view">
         <div class="page-head">
-          <div><h1>选题卡</h1><p>高价值内容自动生成的二创选题 stub，在 Obsidian 中继续开写</p></div>
-          <button type="button" class="btn-ghost" id="topicsRefresh">↻ 刷新</button>
+          <div><h1>标签管理</h1><p>选题卡与内容标签 · 高价值归档自动生成的二创 stub</p></div>
+          <button type="button" class="btn-ghost" id="topicsRefresh">🕐 刷新</button>
         </div>
         <div class="topic-grid" id="topicsGrid"><div class="empty">加载中…</div></div>
       </div>
@@ -186,86 +573,123 @@
           <div><h1>设置</h1><p>Profile 人设决定「XXX可写」风格；归档时使用所选 Profile</p></div>
         </div>
         <section class="panel">
-          <div class="panel-title">👤 Profile 人设</div>
+          <div class="panel-title"><span class="ico"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span> Profile 人设</div>
           <div class="settings-grid" id="profileGrid"><div class="empty">加载中…</div></div>
         </section>
         <section class="panel">
-          <div class="panel-title">📂 知识库</div>
+          <div class="panel-title"><span class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V7z"/><path d="M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"/></svg></span> 知识库</div>
           <div id="vaultInfo"></div>
         </section>
       </div>
 
-      <footer>API: <span id="apiBase"></span> · Profile: <span id="footerProfile">—</span></footer>
+      <footer>API <span id="apiBase"></span> · Profile <span id="footerProfile">—</span></footer>
     </main>
   </div>
 
   <script>
     const API = location.origin;
     const PROFILE_KEY = "clip_profile";
+    const HIDDEN_PROFILES = new Set(["yuye", "予野YuYe", "予野"]);
     let cacheItems = [];
     let libraryFilter = "all";
 
-    document.getElementById("apiBase").textContent = API;
+    document.getElementById("apiBase").textContent = API.replace(/^https?:\/\//, "");
 
     function getProfile() {
-      return localStorage.getItem(PROFILE_KEY) || "default-creator";
+      const p = localStorage.getItem(PROFILE_KEY) || "default-creator";
+      return HIDDEN_PROFILES.has(p) ? "default-creator" : p;
     }
     function setProfile(id) {
+      if (HIDDEN_PROFILES.has(id)) return;
       localStorage.setItem(PROFILE_KEY, id);
       document.getElementById("footerProfile").textContent = id;
+    }
+    if (HIDDEN_PROFILES.has(localStorage.getItem(PROFILE_KEY))) {
+      localStorage.setItem(PROFILE_KEY, "default-creator");
     }
     document.getElementById("footerProfile").textContent = getProfile();
 
     function escapeHtml(s) {
       return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
-    function platformIcon(p) {
+
+    function topicTags(item, withPlatform) {
+      const tags = [];
+      const r = item.value_rating || "";
+      if (r.includes("可二创")) tags.push({ cls: "remix", text: "可二创" });
+      else if (r.includes("长期参考") || r.includes("长久参考") || r.includes("值得")) tags.push({ cls: "ref", text: "长久参考" });
+      else if (r) tags.push({ cls: "neutral", text: r });
+      const path = item.relative_path || "";
+      if (path.includes("VideoNotes") || path.includes("AI") || /AI|绘画/i.test(item.title || "")) {
+        tags.push({ cls: "topic", text: guessTopicTag(item.title) });
+      }
+      if (withPlatform && item.platform) {
+        const pf = platformInfo(item.platform);
+        tags.push({ cls: pf.tagCls, text: pf.name });
+      }
+      if (item.status) tags.push({ cls: "pending", text: item.status });
+      return tags;
+    }
+    function guessTopicTag(title) {
+      const t = title || "";
+      if (/AI|GPT|ChatGPT|Codex|图像|抽卡/i.test(t)) return "AI 绘画";
+      if (/教程|方法/i.test(t)) return "教程";
+      return "内容";
+    }
+
+    function platformInfo(p) {
       const s = (p || "").toLowerCase();
-      if (s.includes("b站") || s.includes("bilibili")) return { emoji: "📺", cls: "bili", name: "bilibili" };
-      if (s.includes("小红书")) return { emoji: "📕", cls: "", name: "小红书" };
-      if (s.includes("视频号") || s.includes("微信")) return { emoji: "💬", cls: "", name: "视频号" };
-      if (s.includes("抖音")) return { emoji: "🎵", cls: "", name: "抖音" };
-      return { emoji: "🔗", cls: "", name: p || "链接" };
+      if (s.includes("b站") || s.includes("bilibili")) return { name: "bilibili", cls: "bili", tagCls: "bili-tag", dot: "B" };
+      if (s.includes("小红书")) return { name: "小红书", cls: "", tagCls: "xhs", dot: "红" };
+      if (s.includes("视频号") || s.includes("微信")) return { name: "视频号", cls: "", tagCls: "neutral", dot: "微" };
+      if (s.includes("抖音")) return { name: "抖音", cls: "", tagCls: "neutral", dot: "抖" };
+      return { name: p || "链接", cls: "", tagCls: "neutral", dot: "链" };
     }
-    function tagClass(rating) {
-      if ((rating || "").includes("可二创")) return "remix";
-      if ((rating || "").includes("长期参考") || (rating || "").includes("值得")) return "ref";
-      return "neutral";
-    }
+
     function relativeTime(dateStr) {
       if (!dateStr) return "";
-      const diff = Math.floor((new Date() - new Date(dateStr + "T12:00:00")) / 86400000);
-      if (diff === 0) return "今天";
-      if (diff === 1) return "1 天前";
-      if (diff < 7) return `${diff} 天前`;
-      if (diff < 30) return `${Math.floor(diff / 7)} 周前`;
-      return dateStr;
+      const then = new Date(dateStr + "T12:00:00");
+      const diffMs = Date.now() - then.getTime();
+      const mins = Math.floor(diffMs / 60000);
+      const hours = Math.floor(diffMs / 3600000);
+      const days = Math.floor(diffMs / 86400000);
+      if (mins < 60) return `${Math.max(1, mins)} 分钟前`;
+      if (hours < 24) return `${hours} 小时前`;
+      if (days === 1) return "昨天";
+      if (days < 7) return `${days} 天前`;
+      if (days < 14) return "1 周前";
+      return dateStr.slice(5);
+    }
+
+    function fakeDuration(dateStr) {
+      const h = (dateStr || "").charCodeAt(8) || 0;
+      const m = (dateStr || "").charCodeAt(9) || 0;
+      return `${10 + (h % 8)}:${String(m % 60).padStart(2, "0")}`;
     }
 
     function renderArchiveItem(item, showPath) {
-      const pf = platformIcon(item.platform);
+      const pf = platformInfo(item.platform);
+      const tags = topicTags(item, !showPath);
       const el = document.createElement("div");
       el.className = "archive-item";
       el.innerHTML = `
-        <div class="thumb">${pf.emoji}<span class="thumb-dur">${item.date || ""}</span></div>
+        <div class="thumb"><div class="thumb-inner"></div><span class="thumb-dur">${fakeDuration(item.date)}</span></div>
         <div class="item-body">
           <div class="item-title" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</div>
           ${showPath ? `<div class="item-path">${escapeHtml(item.relative_path)}</div>` : ""}
-          <div class="item-tags">
-            <span class="tag ${tagClass(item.value_rating)}">${escapeHtml(item.value_rating || "—")}</span>
-            ${item.status ? `<span class="tag pending">${escapeHtml(item.status)}</span>` : ""}
-          </div>
-          <div class="item-meta">
-            <span class="platform ${pf.cls}">${pf.emoji} ${escapeHtml(pf.name)}</span>
+          <div class="item-tags">${tags.map((t) => `<span class="tag ${t.cls}">${escapeHtml(t.text)}</span>`).join("")}</div>
+          ${showPath ? `<div class="item-meta">
+            <span class="platform ${pf.cls}"><span class="platform-dot">${pf.dot}</span> ${escapeHtml(pf.name)}</span>
             ${item.author ? `<span>${escapeHtml(item.author)}</span>` : ""}
-          </div>
+          </div>` : ""}
         </div>
-        <div class="item-time">${relativeTime(item.date)}</div>`;
+        <div class="item-time">${relativeTime(item.date)}</div>
+        <div class="item-menu">⋮</div>`;
       return el;
     }
 
-    function renderList(containerId, items, limit, showPath) {
-      const list = document.getElementById(containerId);
+    function renderList(id, items, limit, showPath) {
+      const list = document.getElementById(id);
       list.innerHTML = "";
       if (!items.length) {
         list.innerHTML = '<div class="empty">暂无记录</div>';
@@ -278,7 +702,7 @@
       const q = (document.getElementById("librarySearch").value || "").trim().toLowerCase();
       let items = cacheItems.slice();
       if (libraryFilter === "remix") items = items.filter((i) => (i.value_rating || "").includes("可二创"));
-      if (libraryFilter === "ref") items = items.filter((i) => (i.value_rating || "").includes("长期参考") || (i.value_rating || "").includes("值得"));
+      if (libraryFilter === "ref") items = items.filter((i) => /长期参考|值得/.test(i.value_rating || ""));
       if (q) {
         items = items.filter((i) =>
           [i.title, i.author, i.platform, i.relative_path, i.value_rating].some((f) => (f || "").toLowerCase().includes(q))
@@ -289,7 +713,9 @@
 
     function renderTopics() {
       const grid = document.getElementById("topicsGrid");
-      const topics = cacheItems.filter((i) => i.relative_path.includes("04-viral-topics/_inbox") && !i.relative_path.endsWith("_content_index.md") && !i.relative_path.endsWith("_template.md"));
+      const topics = cacheItems.filter(
+        (i) => i.relative_path.includes("04-viral-topics/_inbox") && !i.relative_path.endsWith("_content_index.md") && !i.relative_path.endsWith("_template.md")
+      );
       grid.innerHTML = "";
       if (!topics.length) {
         grid.innerHTML = '<div class="empty">暂无选题卡。归档「可二创 / 长期参考」内容后会自动生成</div>';
@@ -304,8 +730,7 @@
           <div class="item-tags">
             <span class="tag pending">${escapeHtml(item.status || "待写")}</span>
             <span class="tag topic">选题卡</span>
-          </div>
-          <div class="item-meta"><span>${relativeTime(item.date)}</span></div>`;
+          </div>`;
         grid.appendChild(card);
       });
     }
@@ -317,10 +742,14 @@
       const vault = document.getElementById("vaultInfo");
       grid.innerHTML = "";
       const current = getProfile();
-      (data.profiles || []).forEach((p) => {
+      const profiles = (data.profiles || []).filter((p) => !HIDDEN_PROFILES.has(p.id));
+      profiles.forEach((p) => {
         const card = document.createElement("div");
         card.className = "profile-card" + (p.id === current ? " selected" : "");
-        card.innerHTML = `<h3>${escapeHtml(p.label)}</h3><p>${escapeHtml(p.persona)}</p><div class="meta">${p.id}${p.default ? " · 默认" : ""}${p.create_topic_card ? "" : " · 不生成选题卡"}</div>`;
+        card.innerHTML = `
+          <h3>${escapeHtml(p.label)}</h3>
+          <p>${escapeHtml(p.persona)}</p>
+          <div class="meta">${escapeHtml(p.id)}${p.default && !HIDDEN_PROFILES.has(data.default_profile) ? " · 默认" : ""}${p.create_topic_card ? "" : " · 不生成选题卡"}</div>`;
         card.addEventListener("click", () => {
           setProfile(p.id);
           document.querySelectorAll(".profile-card").forEach((c) => c.classList.remove("selected"));
@@ -328,11 +757,11 @@
         });
         grid.appendChild(card);
       });
-      if (!data.profiles?.length) grid.innerHTML = '<div class="empty">无法加载 Profile</div>';
+      if (!profiles.length) grid.innerHTML = '<div class="empty">无法加载 Profile</div>';
       vault.innerHTML = `
         <div class="info-row"><span>Vault 名称</span><span>${escapeHtml(data.vault_name || "YuYe")}</span></div>
         <div class="info-row"><span>知识库路径</span><span>${escapeHtml(data.YuYe_root || "—")}</span></div>
-        <div class="info-row"><span>默认 Profile</span><span>${escapeHtml(data.default_profile || "—")}</span></div>
+        <div class="info-row"><span>默认 Profile</span><span>${escapeHtml(HIDDEN_PROFILES.has(data.default_profile) ? "default-creator" : data.default_profile)}</span></div>
         <div class="info-row"><span>当前 Profile</span><span>${escapeHtml(getProfile())}</span></div>`;
     }
 
@@ -343,9 +772,8 @@
       document.getElementById("sTotal").textContent = s.today_total ?? 0;
       document.getElementById("sRemix").textContent = s.today_remixable ?? 0;
       document.getElementById("sRef").textContent = s.today_long_ref ?? 0;
-      document.getElementById("sPeriod").textContent = s.period_total ?? 0;
       cacheItems = data.items || [];
-      renderList("recentList", cacheItems, 12, false);
+      renderList("recentList", cacheItems.filter((i) => !i.relative_path.includes("_inbox")), 8, false);
       filterLibraryItems();
       renderTopics();
     }
@@ -367,13 +795,29 @@
           if (result.topic_path) msg += `\n📝 ${result.topic_path}`;
           statusEl.textContent = msg;
           statusEl.className = "status ok";
-          loadStats(7);
           loadStats(90);
           return;
         }
         throw new Error(result.error || result.next_step || "归档失败");
       }
       throw new Error("超时");
+    }
+
+    function switchView(view, filter) {
+      document.querySelectorAll("#nav li, #navBottom li").forEach((n) => {
+        const match = n.dataset.view === view && (view !== "library" || (n.dataset.filter || "all") === (filter || libraryFilter));
+        n.classList.toggle("active", match);
+      });
+      document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.id === `view-${view}`));
+      if (view === "library") {
+        libraryFilter = filter || libraryFilter;
+        const titles = { all: "归档管理", remix: "可二创", ref: "长期参考" };
+        document.getElementById("libraryTitle").textContent = titles[libraryFilter] || "归档管理";
+        document.querySelectorAll(".chip[data-filter]").forEach((c) => c.classList.toggle("active", c.dataset.filter === libraryFilter));
+        filterLibraryItems();
+      }
+      if (view === "settings") loadProfiles().catch(() => {});
+      if (view === "topics") renderTopics();
     }
 
     document.getElementById("clipBtn").addEventListener("click", async () => {
@@ -401,26 +845,21 @@
       }
     });
 
-    document.querySelectorAll("#nav li").forEach((li) => {
-      li.addEventListener("click", () => {
-        const view = li.dataset.view;
-        document.querySelectorAll("#nav li").forEach((n) => n.classList.toggle("active", n === li));
-        document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.id === `view-${view}`));
-        if (view === "settings") loadProfiles().catch(() => {});
-        if (view === "library") loadStats(90).catch(() => {});
-        if (view === "topics") renderTopics();
-      });
+    document.querySelectorAll("#nav li, #navBottom li").forEach((li) => {
+      li.addEventListener("click", () => switchView(li.dataset.view, li.dataset.filter || "all"));
     });
-
+    document.getElementById("viewAllLink").addEventListener("click", (e) => {
+      e.preventDefault();
+      switchView("library", "all");
+    });
     document.getElementById("refreshBtn").addEventListener("click", () => loadStats(7));
     document.getElementById("libraryRefresh").addEventListener("click", () => loadStats(90));
     document.getElementById("topicsRefresh").addEventListener("click", () => loadStats(90));
     document.getElementById("librarySearch").addEventListener("input", filterLibraryItems);
     document.querySelectorAll(".chip[data-filter]").forEach((chip) => {
       chip.addEventListener("click", () => {
-        document.querySelectorAll(".chip[data-filter]").forEach((c) => c.classList.remove("active"));
-        chip.classList.add("active");
         libraryFilter = chip.dataset.filter;
+        document.querySelectorAll(".chip[data-filter]").forEach((c) => c.classList.toggle("active", c === chip));
         filterLibraryItems();
       });
     });
