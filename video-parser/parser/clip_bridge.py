@@ -80,5 +80,33 @@ def run_clip_stats(*, days: int = 7, config_path: Path | None = None) -> dict[st
     return clip_stats.collect_stats(yuye_root_from_config(config), days=days)
 
 
+def run_clip_profiles(*, config_path: Path | None = None) -> dict[str, Any]:
+    _ensure_import_path()
+    from profile_loader import default_profile_name, list_profiles, load_profile  # noqa: WPS433
+
+    config = load_clip_config(config_path)
+    default = default_profile_name(config)
+    obs = config.get("obsidian") or {}
+    profiles = []
+    for pid in list_profiles(config):
+        p = load_profile(pid, config)
+        profiles.append(
+            {
+                "id": pid,
+                "label": p.label,
+                "persona": p.persona,
+                "niche": p.niche,
+                "default": pid == default,
+                "create_topic_card": p.create_topic_card,
+            }
+        )
+    return {
+        "default_profile": default,
+        "vault_name": obs.get("vault_name") or "YuYe",
+        "YuYe_root": str(yuye_root_from_config(config)),
+        "profiles": profiles,
+    }
+
+
 def clip_dashboard_path() -> Path:
     return _AUTOMEDIA_ROOT / "content-archiver-skill" / "web" / "clip-dashboard.html"

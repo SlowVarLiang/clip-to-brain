@@ -62,6 +62,7 @@ def collect_stats(yuye_root: Path, *, days: int = 1) -> dict[str, Any]:
                 "value_rating": rating or "—",
                 "platform": platform,
                 "author": author,
+                "status": _read_frontmatter_field(text, "status") if "_inbox" in rel else "",
             }
         )
 

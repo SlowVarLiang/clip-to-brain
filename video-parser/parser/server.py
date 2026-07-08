@@ -154,6 +154,7 @@ async def api_root():
             "ingest_status": "GET /ingest/{job_id}",
             "clip": "POST /clip",
             "clip_stats": "GET /clip/stats",
+            "clip_profiles": "GET /clip/profiles",
             "clip_dashboard": "GET /clip/dashboard",
             "clip_status": "GET /clip/{job_id}",
             "bot_feishu": "POST /bot/feishu",
@@ -407,6 +408,16 @@ async def clip_stats_get(days: int = Query(7, ge=1, le=90)):
 
     try:
         return JSONResponse(run_clip_stats(days=days))
+    except FileNotFoundError as exc:
+        return JSONResponse({"success": False, "error": str(exc)}, status_code=503)
+
+
+@app.get("/clip/profiles")
+async def clip_profiles_get():
+    from .clip_bridge import run_clip_profiles
+
+    try:
+        return JSONResponse(run_clip_profiles())
     except FileNotFoundError as exc:
         return JSONResponse({"success": False, "error": str(exc)}, status_code=503)
 

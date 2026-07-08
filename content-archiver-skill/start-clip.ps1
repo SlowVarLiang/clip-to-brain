@@ -1,8 +1,8 @@
-# 启动 Clip-to-Brain 全套服务
-# 用法:
-#   .\start-clip.ps1                    # 仅 API + Dashboard
-#   .\start-clip.ps1 -Telegram          # 后台启动 Telegram 长轮询
-#   .\start-clip.ps1 -Tunnel            # 另开窗口跑内网穿透
+# Clip-to-Brain service launcher
+# Usage:
+#   .\start-clip.ps1
+#   .\start-clip.ps1 -Telegram
+#   .\start-clip.ps1 -Tunnel
 
 param(
     [switch]$Telegram,
@@ -34,28 +34,26 @@ function Import-DotEnv([string]$Path) {
 Import-DotEnv $EnvFile
 Import-DotEnv (Join-Path $Root ".env.local")
 
-Write-Host "Clip-to-Brain 服务启动中…" -ForegroundColor Cyan
+Write-Host "Clip-to-Brain starting..." -ForegroundColor Cyan
 Write-Host "  Dashboard : http://127.0.0.1:8765/clip/dashboard" -ForegroundColor Green
-Write-Host "  CLI       : .\clip.ps1 `"<链接>`"" -ForegroundColor Green
-Write-Host "  飞书 Hook : POST http://127.0.0.1:8765/bot/feishu (+ tunnel.ps1 暴露公网)" -ForegroundColor Yellow
+Write-Host "  CLI       : .\clip.ps1 <url>" -ForegroundColor Green
+Write-Host "  Feishu    : POST http://127.0.0.1:8765/bot/feishu" -ForegroundColor Yellow
 Write-Host ""
 
 if ($Telegram) {
     if ($env:TELEGRAM_BOT_TOKEN) {
-        Start-Process powershell -ArgumentList @(
-            "-NoExit", "-File", (Join-Path $Root "start-telegram.ps1")
-        ) | Out-Null
-        Write-Host "  Telegram  : 长轮询已在另一窗口启动" -ForegroundColor Green
+        $tgScript = Join-Path $Root "start-telegram.ps1"
+        Start-Process powershell -ArgumentList "-NoExit", "-File", $tgScript | Out-Null
+        Write-Host "  Telegram  : polling started in new window" -ForegroundColor Green
     } else {
-        Write-Host "  Telegram  : 跳过（未设置 TELEGRAM_BOT_TOKEN）" -ForegroundColor DarkYellow
+        Write-Host "  Telegram  : skipped (TELEGRAM_BOT_TOKEN not set)" -ForegroundColor DarkYellow
     }
 }
 
 if ($Tunnel) {
-    Start-Process powershell -ArgumentList @(
-        "-NoExit", "-File", (Join-Path $Root "tunnel.ps1")
-    ) | Out-Null
-    Write-Host "  Tunnel    : 内网穿透已在另一窗口启动" -ForegroundColor Green
+    $tunnelScript = Join-Path $Root "tunnel.ps1"
+    Start-Process powershell -ArgumentList "-NoExit", "-File", $tunnelScript | Out-Null
+    Write-Host "  Tunnel    : started in new window" -ForegroundColor Green
 }
 
 Write-Host ""
