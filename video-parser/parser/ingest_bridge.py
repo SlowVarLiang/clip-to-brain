@@ -1,4 +1,4 @@
-"""Lumis 一键入库桥接 — 供浏览器插件 / API 调用 content-archiver-skill。"""
+"""YuYe 一键入库桥接 — 供浏览器插件 / API 调用 content-archiver-skill。"""
 
 from __future__ import annotations
 
@@ -40,16 +40,16 @@ def run_ingest_one(
     skip_transcribe: bool = False,
     config_path: Path | None = None,
 ) -> dict[str, Any]:
-    """同步执行单链接入库，返回 lumis_ingest.ingest_one 结果 dict。"""
+    """同步执行单链接入库，返回 yuye_ingest.ingest_one 结果 dict。"""
     import importlib
 
     _ensure_import_path()
-    import lumis_ingest  # noqa: WPS433
+    import yuye_ingest  # noqa: WPS433
 
-    importlib.reload(lumis_ingest)
+    importlib.reload(yuye_ingest)
 
     config = load_ingest_config(config_path)
-    return lumis_ingest.ingest_one(
+    return yuye_ingest.ingest_one(
         url,
         config,
         category=category,

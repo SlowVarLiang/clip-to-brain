@@ -48,7 +48,7 @@ JSON.stringify([...document.querySelectorAll('img')].map(i => i.src).filter(s =>
 
 1. 读取 `full_text` 或 `ocr_raw.md`
 2. 按 [classification.md](classification.md) 分类（平台规则类通常 → `07` / `xiaohongshu`）
-3. 结构化萃取 → 写入 `%TEMP%\lumis_note.md`
+3. 结构化萃取 → 写入 `%TEMP%\YuYe_note.md`
 4. `content_archiver.py archive --category 07 --subfolder xiaohongshu`
 
 ## OCR 引擎

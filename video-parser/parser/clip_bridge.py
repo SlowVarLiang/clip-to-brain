@@ -65,9 +65,10 @@ def run_clip_one(
     return clip.result_to_dict(result)
 
 
-def lumis_root_from_config(config: dict[str, Any]) -> Path:
+def yuye_root_from_config(config: dict[str, Any]) -> Path:
     skill = _AUTOMEDIA_ROOT / "content-archiver-skill"
-    root = Path(config.get("lumis_root", "../lumis"))
+    raw = config.get("YuYe_root") or config.get("lumis_root", "../vault")
+    root = Path(raw)
     return root if root.is_absolute() else (skill / root).resolve()
 
 
@@ -76,7 +77,7 @@ def run_clip_stats(*, days: int = 7, config_path: Path | None = None) -> dict[st
     import clip_stats  # noqa: WPS433
 
     config = load_clip_config(config_path)
-    return clip_stats.collect_stats(lumis_root_from_config(config), days=days)
+    return clip_stats.collect_stats(yuye_root_from_config(config), days=days)
 
 
 def clip_dashboard_path() -> Path:

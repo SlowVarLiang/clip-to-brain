@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""抓取微信公众号文章并归档到 lumis。"""
+"""抓取微信公众号文章并归档到 YuYe。"""
 
 from __future__ import annotations
 
@@ -56,8 +56,8 @@ source_url: "{url}"
 source_type: article
 platform: 微信公众号
 author: {author}
-lumis_category: "{category}"
-lumis_subfolder: {subfolder}
+YuYe_category: "{category}"
+YuYe_subfolder: {subfolder}
 category: 行业资料
 tags: [哥飞, SEO, AI出海, 独立开发, 找词, 小语种, 外链, 转化, 社媒运营, 上站Hackathon]
 value_rating: 长期参考
@@ -147,8 +147,11 @@ def main() -> int:
     stem = f"{date}-{slugify(data['title'])}"
 
     config = json.loads(CONFIG.read_text(encoding="utf-8"))
-    lumis_root = Path(config["lumis_root"])
-    dest_dir = lumis_root / config["categories"][args.category]["path"] / args.subfolder
+    raw = config.get("YuYe_root") or config.get("lumis_root")
+    if not raw:
+        raise KeyError("YuYe_root")
+    yuye_root = Path(raw)
+    dest_dir = yuye_root / config["categories"][args.category]["path"] / args.subfolder
     originals_dir = dest_dir / "_originals"
     originals_dir.mkdir(parents=True, exist_ok=True)
 

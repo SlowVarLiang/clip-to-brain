@@ -309,7 +309,7 @@ async def ingest_post(
     background_tasks: BackgroundTasks,
     account: Account = Depends(get_account),
 ):
-    """一键入库 Lumis：解析 → 转写 → 主笔记 + 逐字稿 sidecar。"""
+    """一键入库 YuYe：解析 → 转写 → 主笔记 + 逐字稿 sidecar。"""
     if not body.url.strip().startswith("http"):
         return JSONResponse({"success": False, "error": "url 必须以 http 开头"}, status_code=400)
     job_id = uuid.uuid4().hex

@@ -76,8 +76,8 @@ title: "零基礎30分鐘學會Codex 95%功能！【福利贈送】"
 date: 2026-07-06
 source_url: "https://youtu.be/dMiV7Yx9yk4"
 source_type: video
-lumis_category: "03"
-lumis_subfolder: VideoNotes
+YuYe_category: "03"
+YuYe_subfolder: VideoNotes
 platform: YouTube
 author: 李厂长来了
 category: 教程方法论

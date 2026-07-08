@@ -1,6 +1,6 @@
-# Lumis 视频归档 · 浏览器插件
+# YuYe 视频归档 · 浏览器插件
 
-刷 **YouTube / B站** 时，点按钮即可：解析 → Whisper 转写 → 写入 Lumis（主笔记 + `_transcripts/` 逐字稿）。
+刷 **YouTube / B站** 时，点按钮即可：解析 → Whisper 转写 → 写入 YuYe（主笔记 + `_transcripts/` 逐字稿）。
 
 ## 前置条件
 
@@ -26,9 +26,9 @@ cd D:\0-CryptoLumis\5-automedia\video-parser
 
 | 方式 | 说明 |
 |------|------|
-| 浮动按钮 | 视频页右下角 **Lumis 归档** |
+| 浮动按钮 | 视频页右下角 **YuYe 归档** |
 | 扩展 Popup | **归档当前标签页** |
-| 右键菜单 | 页面 / 视频上 → **归档当前视频到 Lumis** |
+| 右键菜单 | 页面 / 视频上 → **归档当前视频到 YuYe** |
 
 提交后扩展会轮询 `GET /ingest/{job_id}`，完成后系统通知显示笔记路径。
 

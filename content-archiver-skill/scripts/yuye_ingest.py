@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Lumis 链接一键入库
+YuYe 链接一键入库
 
 流程: 解析+转写 → 逐字稿独立文件 → 主笔记（萃取+链接）→ 归档
 
 用法:
-  python lumis_ingest.py ingest "<链接>"
+  python yuye_ingest.py ingest "<链接>"
 """
 
 from __future__ import annotations
@@ -129,13 +129,13 @@ def slug_from_title(title: str) -> str:
 
 
 def platform_subfolder_index_path(
-    lumis_root: Path, category: str, subfolder: str, config: dict[str, Any]
+    yuye_root: Path, category: str, subfolder: str, config: dict[str, Any]
 ) -> Path | None:
     cat = config.get("categories", {}).get(category, {})
     rel = cat.get("path", "")
     if not rel:
         return None
-    return lumis_root / rel / subfolder / "_content_index.md"
+    return yuye_root / rel / subfolder / "_content_index.md"
 
 
 def ensure_subfolder_index(path: Path) -> None:
@@ -172,7 +172,7 @@ def append_subfolder_index(
 
 def move_raw_json(
     raw_saved: str | None,
-    lumis_root: Path,
+    yuye_root: Path,
     category: str,
     subfolder: str,
     config: dict[str, Any],
@@ -182,7 +182,7 @@ def move_raw_json(
         return ""
     name = Path(raw_saved).name
     cat = config.get("categories", {}).get(category, {})
-    dest_dir = lumis_root / cat.get("path", "") / subfolder / "_transcripts"
+    dest_dir = yuye_root / cat.get("path", "") / subfolder / "_transcripts"
     dest_dir.mkdir(parents=True, exist_ok=True)
 
     src = Path(raw_saved)
@@ -249,8 +249,8 @@ title: "{title}"
 date: {date}
 source_url: "{source_url}"
 source_type: video
-lumis_category: "{route['category']}"
-lumis_subfolder: {route['subfolder']}
+YuYe_category: "{route['category']}"
+YuYe_subfolder: {route['subfolder']}
 platform: {platform}
 author: {author}
 category: {content_category}
@@ -343,8 +343,8 @@ title: "{title}"
 date: {date}
 source_url: "{source_url}"
 source_type: video
-lumis_category: "{route['category']}"
-lumis_subfolder: {route['subfolder']}
+YuYe_category: "{route['category']}"
+YuYe_subfolder: {route['subfolder']}
 platform: {platform}
 author: {author}
 category: {content_category}
@@ -468,8 +468,8 @@ title: "{_escape_yaml(title)}"
 date: {date}
 source_url: "{source_url}"
 source_type: video
-lumis_category: "{route['category']}"
-lumis_subfolder: {route['subfolder']}
+YuYe_category: "{route['category']}"
+YuYe_subfolder: {route['subfolder']}
 platform: {platform}
 author: {author}
 category: {content_category}
@@ -528,8 +528,8 @@ title: "{title}"
 date: {date}
 source_url: "{source_url}"
 source_type: video
-lumis_category: "{route['category']}"
-lumis_subfolder: {route['subfolder']}
+YuYe_category: "{route['category']}"
+YuYe_subfolder: {route['subfolder']}
 platform: {platform}
 author: {author}
 category: 案例拆解
@@ -628,7 +628,7 @@ def ingest_one(
     video_processor = video_skill_root / "scripts" / "video_processor.py"
     archiver = SKILL_ROOT / "scripts" / "content_archiver.py"
     archiver_config = SKILL_ROOT / "config.json"
-    lumis_root = resolve_path(SKILL_ROOT, config.get("lumis_root", "../lumis"))
+    yuye_root = resolve_path(SKILL_ROOT, config.get("YuYe_root", "../vault"))
     python = find_python(video_skill_root)
 
     if not video_processor.exists():
@@ -653,7 +653,7 @@ def ingest_one(
     fallback_raw = Path(video_cfg.get("knowledge_base", {}).get("vault_path", "")) / "_transcripts"
     raw_name = move_raw_json(
         data.get("raw_saved"),
-        lumis_root,
+        yuye_root,
         route["category"],
         route["subfolder"],
         config,
@@ -661,7 +661,7 @@ def ingest_one(
     )
     if raw_name:
         data["raw_saved"] = str(
-            lumis_root
+            yuye_root
             / config["categories"][route["category"]]["path"]
             / route["subfolder"]
             / "_transcripts"
@@ -681,7 +681,7 @@ def ingest_one(
     file_stem = f"{date_prefix}-{slug_from_title(title)}"
     sidecar_name = f"{file_stem}-transcript.md"
 
-    cat_path = lumis_root / config["categories"][route["category"]]["path"] / route["subfolder"]
+    cat_path = yuye_root / config["categories"][route["category"]]["path"] / route["subfolder"]
     transcripts_dir = cat_path / "_transcripts"
 
     transcript_ok = tr.get("success", False)
@@ -775,7 +775,7 @@ def ingest_one(
 
     note_path = Path(archive_result["note_path"])
     content_category = guess_content_category(title, full_text[:3000])
-    sub_idx = platform_subfolder_index_path(lumis_root, route["category"], route["subfolder"], config)
+    sub_idx = platform_subfolder_index_path(yuye_root, route["category"], route["subfolder"], config)
     if sub_idx:
         kw_source = (
             extraction.sections.get("关键词", "")
@@ -834,10 +834,10 @@ def reextract_note(note_path: Path, config: dict[str, Any]) -> dict[str, Any]:
         return {"success": False, "error": f"笔记不存在: {note_path}"}
 
     meta = parse_note_frontmatter(note_path.read_text(encoding="utf-8"))
-    lumis_root = resolve_path(SKILL_ROOT, config.get("lumis_root", "../lumis"))
-    category = meta.get("lumis_category", "03")
-    subfolder = meta.get("lumis_subfolder", "VideoNotes")
-    cat_path = lumis_root / config["categories"][category]["path"] / subfolder
+    yuye_root = resolve_path(SKILL_ROOT, config.get("YuYe_root", "../vault"))
+    category = meta.get("YuYe_category") or meta.get("lumis_category", "03")
+    subfolder = meta.get("YuYe_subfolder") or meta.get("lumis_subfolder", "VideoNotes")
+    cat_path = yuye_root / config["categories"][category]["path"] / subfolder
     rel_sidecar = meta.get("transcript_note", "").replace("\\", "/").lstrip("/")
     sidecar_path = (cat_path / rel_sidecar) if rel_sidecar else None
     if not sidecar_path or not sidecar_path.exists():
@@ -960,11 +960,11 @@ def cmd_reextract(args: argparse.Namespace, config: dict[str, Any]) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Lumis 链接一键入库")
+    parser = argparse.ArgumentParser(description="YuYe 链接一键入库")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG))
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_ingest = sub.add_parser("ingest", help="解析链接并归档到 lumis")
+    p_ingest = sub.add_parser("ingest", help="解析链接并归档到 YuYe")
     p_ingest.add_argument("urls", nargs="+", help="一个或多个链接")
     p_ingest.add_argument("--category", help="强制类别 01-07")
     p_ingest.add_argument("--subfolder", help="强制子目录")

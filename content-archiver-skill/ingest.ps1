@@ -1,4 +1,4 @@
-# Lumis 链接一键入库（Windows）
+# YuYe 链接一键入库（Windows）
 # 用法:
 #   .\ingest.ps1 "https://www.xiaohongshu.com/discovery/item/..."
 #   .\ingest.ps1 -Url "链接1" "链接2"
@@ -15,7 +15,7 @@ param(
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Python = Join-Path (Split-Path -Parent $Root) "video-parser\.venv\Scripts\python.exe"
-$Script = Join-Path $Root "scripts\lumis_ingest.py"
+$Script = Join-Path $Root "scripts\yuye_ingest.py"
 $Config = Join-Path $Root "config.json"
 
 if (-not (Test-Path $Python)) { $Python = "python" }

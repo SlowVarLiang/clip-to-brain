@@ -1,4 +1,4 @@
-#lumis-archive-btn {
+#yuye-archive-btn {
   position: fixed;
   right: 20px;
   bottom: 88px;
@@ -17,33 +17,33 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
 }
 
-#lumis-archive-btn:hover {
+#yuye-archive-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(99, 102, 241, 0.55);
 }
 
-#lumis-archive-btn.lumis-busy {
+#yuye-archive-btn.yuye-busy {
   opacity: 0.92;
   cursor: wait;
-  animation: lumis-pulse 1.2s ease-in-out infinite;
+  animation: yuye-pulse 1.2s ease-in-out infinite;
 }
 
-#lumis-archive-btn.lumis-done {
+#yuye-archive-btn.yuye-done {
   background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
 }
 
-#lumis-archive-btn.lumis-error {
+#yuye-archive-btn.yuye-error {
   background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
   box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
 }
 
-.lumis-btn-icon {
+.yuye-btn-icon {
   font-size: 16px;
   line-height: 1;
 }
 
-@keyframes lumis-pulse {
+@keyframes yuye-pulse {
   0%,
   100% {
     opacity: 0.88;
@@ -53,7 +53,7 @@
   }
 }
 
-#lumis-archive-toast {
+#yuye-archive-toast {
   position: fixed;
   right: 20px;
   bottom: 150px;
@@ -68,6 +68,6 @@
   display: none;
 }
 
-#lumis-archive-toast.lumis-toast-error {
+#yuye-archive-toast.yuye-toast-error {
   background: rgba(153, 27, 27, 0.95);
 }

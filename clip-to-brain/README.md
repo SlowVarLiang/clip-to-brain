@@ -65,7 +65,7 @@ cd ..\content-archiver-skill
 
 ### 5. Obsidian
 
-用 Obsidian 打开 `vault/` 文件夹（Vault 名建议 `ClipBrain`）。
+用 Obsidian 打开 `vault/` 文件夹（Vault 名建议 `YuYe`）。
 
 ---
 

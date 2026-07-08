@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""选题 → 予野六页图文脚手架。完整规范见 lumis/04-viral-topics/tool-tutorials/_six-page-carousel-spec.md"""
+"""选题 → 予野六页图文脚手架。完整规范见 YuYe/04-viral-topics/tool-tutorials/_six-page-carousel-spec.md"""
 
 from __future__ import annotations
 

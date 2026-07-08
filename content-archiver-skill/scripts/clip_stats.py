@@ -19,7 +19,7 @@ def _read_frontmatter_field(text: str, key: str) -> str:
     return ""
 
 
-def collect_stats(lumis_root: Path, *, days: int = 1) -> dict[str, Any]:
+def collect_stats(yuye_root: Path, *, days: int = 1) -> dict[str, Any]:
     skip_dirs = {"_transcripts", "_originals", "_ocr_temp", "output", ".obsidian", "copilot"}
     cutoff = (datetime.now() - timedelta(days=max(days - 1, 0))).strftime("%Y-%m-%d")
     today = datetime.now().strftime("%Y-%m-%d")
@@ -27,7 +27,7 @@ def collect_stats(lumis_root: Path, *, days: int = 1) -> dict[str, Any]:
     total = remixable = long_ref = archived = 0
     items: list[dict[str, str]] = []
 
-    for md in sorted(lumis_root.rglob("*.md"), reverse=True):
+    for md in sorted(yuye_root.rglob("*.md"), reverse=True):
         if any(part in skip_dirs for part in md.parts):
             continue
         if md.name.startswith("_") and md.parent.name != "04-viral-topics":
@@ -40,7 +40,7 @@ def collect_stats(lumis_root: Path, *, days: int = 1) -> dict[str, Any]:
             continue
 
         text = md.read_text(encoding="utf-8")
-        rel = md.relative_to(lumis_root).as_posix()
+        rel = md.relative_to(yuye_root).as_posix()
         rating = _read_frontmatter_field(text, "value_rating")
         title = _read_frontmatter_field(text, "title") or md.stem[11:]
         platform = _read_frontmatter_field(text, "platform")

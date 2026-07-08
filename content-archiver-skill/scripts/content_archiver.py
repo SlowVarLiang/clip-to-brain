@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Lumis 内容自动归档 — 将 Markdown 笔记写入对应分类目录并更新总索引。
+YuYe 内容自动归档 — 将 Markdown 笔记写入对应分类目录并更新总索引。
 
 用法:
   python content_archiver.py archive --note note.md --category 03 --subfolder _benchmark
@@ -61,9 +61,9 @@ def resolve_paths(
         raise ValueError(f"无效 category: {category}，可选: {valid}")
 
     cat = categories[category]
-    lumis_root = Path(config.get("lumis_root", "../lumis"))
-    if not lumis_root.is_absolute():
-        lumis_root = (SKILL_ROOT / lumis_root).resolve()
+    yuye_root = Path(config.get("YuYe_root") or config.get("lumis_root", "../vault"))
+    if not yuye_root.is_absolute():
+        yuye_root = (SKILL_ROOT / yuye_root).resolve()
 
     sub = subfolder or cat.get("default_subfolder", "")
     allowed = cat.get("subfolders", [])
@@ -72,7 +72,7 @@ def resolve_paths(
             f"无效 subfolder: {sub}，{category} 可选: {', '.join(allowed)}"
         )
 
-    dest_dir = lumis_root / cat["path"] / sub if sub else lumis_root / cat["path"]
+    dest_dir = yuye_root / cat["path"] / sub if sub else yuye_root / cat["path"]
     return dest_dir, cat
 
 
@@ -80,7 +80,7 @@ def ensure_index(path: Path) -> None:
     if path.exists():
         return
     header = (
-        "# Lumis 内容索引总表\n\n"
+        "# YuYe 内容索引总表\n\n"
         "| 日期 | 标题 | 类别 | 子目录 | 来源 | 标签 | 笔记 |\n"
         "|------|------|------|--------|------|------|------|\n"
     )
@@ -125,14 +125,14 @@ def archive_note(
 
     dest.write_text(note_content, encoding="utf-8")
 
-    lumis_root = Path(config.get("lumis_root", "../lumis"))
-    if not lumis_root.is_absolute():
-        lumis_root = (SKILL_ROOT / lumis_root).resolve()
-    index_path = lumis_root / config.get("index_file", "_content_index.md")
+    yuye_root = Path(config.get("YuYe_root") or config.get("lumis_root", "../vault"))
+    if not yuye_root.is_absolute():
+        yuye_root = (SKILL_ROOT / yuye_root).resolve()
+    index_path = yuye_root / config.get("index_file", "_content_index.md")
     ensure_index(index_path)
 
     sub = subfolder or cat.get("default_subfolder", "")
-    rel_note = dest.relative_to(lumis_root).as_posix()
+    rel_note = dest.relative_to(yuye_root).as_posix()
     row = (
         f"| {date} | {title} | {cat.get('label', category)} | {sub} "
         f"| {source_url or '—'} | {tags} | [[{rel_note}]] |"
@@ -176,7 +176,7 @@ def cmd_archive(args: argparse.Namespace, config: dict[str, Any]) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Lumis 内容自动归档")
+    parser = argparse.ArgumentParser(description="YuYe 内容自动归档")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG), help="config.json 路径")
     sub = parser.add_subparsers(dest="command", required=True)
 

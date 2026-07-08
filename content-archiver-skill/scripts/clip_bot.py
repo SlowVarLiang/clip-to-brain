@@ -238,7 +238,8 @@ def handle_telegram_update(body: dict[str, Any], *, profile: str | None = None) 
             from content_archiver import load_config
 
             config = load_config(scripts.parent / "config.json")
-            root = Path(config.get("lumis_root", "../lumis"))
+            raw = config.get("YuYe_root") or config.get("lumis_root", "../vault")
+            root = Path(raw)
             if not root.is_absolute():
                 root = (scripts.parent / root).resolve()
             data = collect_stats(root, days=1)

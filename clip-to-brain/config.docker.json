@@ -1,8 +1,8 @@
 {
-  "lumis_root": "/app/vault",
+  "YuYe_root": "/app/vault",
   "index_file": "_content_index.md",
   "obsidian": {
-    "vault_name": "ClipBrain"
+    "vault_name": "YuYe"
   },
   "clip": {
     "default_profile": "default-creator",

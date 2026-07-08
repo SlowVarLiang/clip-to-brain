@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clip-to-Brain · 予野素材机</title>
+  <title>Clip-to-Brain · YuYe</title>
   <style>
     :root {
       --bg: #0f1117;
@@ -74,7 +74,7 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Clip-to-Brain · 予野素材机</h1>
+      <h1>Clip-to-Brain · YuYe</h1>
       <p>丢链 → 结构化笔记 → 二创角度 → 选题卡</p>
     </header>
 
@@ -179,7 +179,7 @@
         const res = await fetch(`${API}/clip`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ input, account: "予野YuYe" }),
+          body: JSON.stringify({ input, profile: "default-creator" }),
         });
         const data = await res.json();
         if (!res.ok || !data.job_id) throw new Error(data.error || data.detail || "提交失败");

@@ -117,12 +117,12 @@ async function runClipJob(jobId, settings, tabId) {
   try {
     const result = await pollClipJob(jobId, settings);
     const { shortName, msg } = formatDoneMessage(result);
-    notify("Lumis 已入库", msg);
+    notify("YuYe 已入库", msg);
     pushTabMessage(tabId, { type: "INGEST_DONE", result, displayName: shortName });
     return { ok: true, result };
   } catch (err) {
     const msg = String(err.message || err);
-    notify("Lumis 归档失败", msg);
+    notify("YuYe 归档失败", msg);
     pushTabMessage(tabId, { type: "INGEST_ERROR", error: msg });
     return { ok: false, error: msg };
   } finally {
@@ -133,7 +133,7 @@ async function runClipJob(jobId, settings, tabId) {
 async function handleIngest(url, tabId) {
   if (!url || !url.startsWith("http")) {
     const err = "无法识别当前页面链接";
-    notify("Lumis 归档", err);
+    notify("YuYe 归档", err);
     return { ok: false, error: err };
   }
 
@@ -142,7 +142,7 @@ async function handleIngest(url, tabId) {
   try {
     const jobId = await submitClip(url, settings);
     activeJobs.set(jobId, { tabId, url, started: Date.now() });
-    notify("Lumis 丢链", "已提交，解析/转写/萃取中…");
+    notify("YuYe 丢链", "已提交，解析/转写/萃取中…");
     pushTabMessage(tabId, { type: "INGEST_PROGRESS", message: "已提交，处理中…" });
 
     runClipJob(jobId, settings, tabId);
@@ -150,7 +150,7 @@ async function handleIngest(url, tabId) {
     return { ok: true, queued: true, job_id: jobId };
   } catch (err) {
     const msg = String(err.message || err);
-    notify("Lumis 归档失败", msg);
+    notify("YuYe 归档失败", msg);
     pushTabMessage(tabId, { type: "INGEST_ERROR", error: msg });
     return { ok: false, error: msg };
   }
@@ -173,8 +173,8 @@ const PAGE_PATTERNS = [
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
-      id: "lumis-ingest-page",
-      title: "丢链归档到 Lumis",
+      id: "yuye-ingest-page",
+      title: "丢链归档到 YuYe",
       contexts: ["page", "video", "link"],
       documentUrlPatterns: PAGE_PATTERNS,
     });
@@ -182,7 +182,7 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId !== "lumis-ingest-page" || !tab?.id) return;
+  if (info.menuItemId !== "yuye-ingest-page" || !tab?.id) return;
   const url = info.linkUrl || (await getUrlFromTab(tab));
   handleIngest(url, tab.id);
 });

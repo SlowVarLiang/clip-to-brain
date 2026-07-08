@@ -32,7 +32,7 @@ from llm_extract import (
     tags_from_keywords,
     value_rating_from_section,
 )
-from lumis_ingest import ingest_one, slug_from_title
+from yuye_ingest import ingest_one, slug_from_title
 from profile_loader import Profile, default_profile_name, list_profiles, load_profile
 
 SKILL_ROOT = Path(__file__).resolve().parent.parent
@@ -74,7 +74,7 @@ def resolve_path(base: Path, raw: str) -> Path:
 
 def obsidian_vault_name(config: dict[str, Any]) -> str:
     obs = config.get("obsidian") or {}
-    return obs.get("vault_name") or "lumis"
+    return obs.get("vault_name") or "YuYe"
 
 
 def open_in_obsidian(config: dict[str, Any], relative_path: str) -> bool:
@@ -235,8 +235,8 @@ def create_topic_stub(
     if result.value_rating not in ("可二创", "长期参考") or not result.remix_angles:
         return None
 
-    lumis_root = resolve_path(SKILL_ROOT, config.get("lumis_root", "../lumis"))
-    inbox = lumis_root / profile.topic_inbox.replace("\\", "/")
+    yuye_root = resolve_path(SKILL_ROOT, config.get("YuYe_root", "../vault"))
+    inbox = yuye_root / profile.topic_inbox.replace("\\", "/")
     inbox.mkdir(parents=True, exist_ok=True)
 
     date = datetime.now().strftime("%Y-%m-%d")
@@ -295,7 +295,7 @@ tags: []
 """,
         encoding="utf-8",
     )
-    rel = dest.relative_to(lumis_root).as_posix()
+    rel = dest.relative_to(yuye_root).as_posix()
     _append_inbox_index(inbox / "_content_index.md", dest.name, primary, source_rel)
     return rel
 
@@ -418,8 +418,8 @@ title: "{safe_title}"
 date: {date}
 source_url: "{source_url}"
 source_type: article
-lumis_category: "{route['category']}"
-lumis_subfolder: {route['subfolder']}
+YuYe_category: "{route['category']}"
+YuYe_subfolder: {route['subfolder']}
 platform: {platform}
 author: {author}
 category: {content_category}
@@ -518,8 +518,8 @@ def ingest_article_body(
     if subfolder:
         route["subfolder"] = subfolder
 
-    lumis_root = resolve_path(SKILL_ROOT, config.get("lumis_root", "../lumis"))
-    cat_path = lumis_root / config["categories"][route["category"]]["path"] / route["subfolder"]
+    yuye_root = resolve_path(SKILL_ROOT, config.get("YuYe_root", "../vault"))
+    cat_path = yuye_root / config["categories"][route["category"]]["path"] / route["subfolder"]
     originals_dir = cat_path / "_originals"
     originals_dir.mkdir(parents=True, exist_ok=True)
 
@@ -862,7 +862,7 @@ def cmd_clip(args: argparse.Namespace, config: dict[str, Any]) -> int:
         if result.topic_path:
             open_in_obsidian(config, result.topic_path)
         elif not opened:
-            print("提示：Obsidian 未打开，请确认 vault 名称为 lumis", file=sys.stderr)
+            print("提示：Obsidian 未打开，请确认 vault 名称为 YuYe", file=sys.stderr)
 
     payload = result_to_dict(result)
     if args.json:
@@ -871,7 +871,7 @@ def cmd_clip(args: argparse.Namespace, config: dict[str, Any]) -> int:
 
 
 def cmd_reextract(args: argparse.Namespace, config: dict[str, Any]) -> int:
-    from lumis_ingest import reextract_note
+    from yuye_ingest import reextract_note
 
     profile = resolve_profile(args.profile or args.account, config)
     ok = True
@@ -910,8 +910,8 @@ def cmd_reextract(args: argparse.Namespace, config: dict[str, Any]) -> int:
 def cmd_stats(args: argparse.Namespace, config: dict[str, Any]) -> int:
     from clip_stats import collect_stats
 
-    lumis_root = resolve_path(SKILL_ROOT, config.get("lumis_root", "../lumis"))
-    data = collect_stats(lumis_root, days=getattr(args, "days", 1) or 1)
+    yuye_root = resolve_path(SKILL_ROOT, config.get("YuYe_root", "../vault"))
+    data = collect_stats(yuye_root, days=getattr(args, "days", 1) or 1)
     s = data["summary"]
     days = data["days"]
     if days <= 1:

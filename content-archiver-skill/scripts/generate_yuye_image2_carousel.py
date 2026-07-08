@@ -19,7 +19,7 @@ from yuye_image2_prompts import build_prompt, set_theme, get_theme, STYLE_PREFIX
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUT = (
     REPO_ROOT
-    / "lumis/04-viral-topics/tool-tutorials/output"
+    / "YuYe/04-viral-topics/tool-tutorials/output"
     / "2026-07-06-topic01-guoqi-all-in-ai-route-a"
 )
 

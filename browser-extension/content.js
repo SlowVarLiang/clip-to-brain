@@ -1,6 +1,6 @@
 (function () {
-  const BTN_ID = "lumis-archive-btn";
-  const TOAST_ID = "lumis-archive-toast";
+  const BTN_ID = "yuye-archive-btn";
+  const TOAST_ID = "yuye-archive-toast";
 
   function extractVideoUrl() {
     const href = location.href;
@@ -54,7 +54,7 @@
       el.id = TOAST_ID;
       document.documentElement.appendChild(el);
     }
-    el.className = kind === "error" ? "lumis-toast lumis-toast-error" : "lumis-toast";
+    el.className = kind === "error" ? "yuye-toast yuye-toast-error" : "yuye-toast";
     el.textContent = text;
     el.style.display = "block";
     clearTimeout(el._hideTimer);
@@ -82,7 +82,7 @@
     btn.id = BTN_ID;
     btn.type = "button";
     btn.title = "Clip-to-Brain：解析 + 转写 + 结构化笔记";
-    btn.innerHTML = `<span class="lumis-btn-icon">📥</span><span class="lumis-btn-text">丢链归档</span>`;
+    btn.innerHTML = `<span class="yuye-btn-icon">📥</span><span class="yuye-btn-text">丢链归档</span>`;
     btn.addEventListener("click", onClick);
     document.documentElement.appendChild(btn);
   }
@@ -90,18 +90,18 @@
   function setButtonState(state, detail) {
     const btn = document.getElementById(BTN_ID);
     if (!btn) return;
-    btn.classList.remove("lumis-busy", "lumis-done", "lumis-error");
-    const text = btn.querySelector(".lumis-btn-text");
+    btn.classList.remove("yuye-busy", "yuye-done", "yuye-error");
+    const text = btn.querySelector(".yuye-btn-text");
     if (state === "idle") {
       text.textContent = "丢链归档";
     } else if (state === "busy") {
-      btn.classList.add("lumis-busy");
+      btn.classList.add("yuye-busy");
       text.textContent = "处理中…";
     } else if (state === "done") {
-      btn.classList.add("lumis-done");
+      btn.classList.add("yuye-done");
       text.textContent = detail ? "已入库 ✓" : "完成 ✓";
     } else if (state === "error") {
-      btn.classList.add("lumis-error");
+      btn.classList.add("yuye-error");
       text.textContent = "失败 ✗";
       btn.title = detail || "归档失败";
     }
@@ -109,7 +109,7 @@
 
   function onClick() {
     const btn = document.getElementById(BTN_ID);
-    if (btn?.classList.contains("lumis-busy")) return;
+    if (btn?.classList.contains("yuye-busy")) return;
 
     const url = extractVideoUrl();
     setButtonState("busy");

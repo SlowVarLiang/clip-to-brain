@@ -184,7 +184,7 @@ def compose_p5_kb(raw: Path, out: Path) -> None:
     )
     _paste_centered(base, kb, margin_x + 8, y0 + 8, inner_w - 16, box_h - 16)
 
-    draw.text((margin_x, H - 48), "YuYe内容知识库 · lumis 七库框架", fill=GRAY, font=_font(20))
+    draw.text((margin_x, H - 48), "YuYe内容知识库 · YuYe 七库框架", fill=GRAY, font=_font(20))
 
     out.parent.mkdir(parents=True, exist_ok=True)
     base.save(out, quality=92)

@@ -14,7 +14,7 @@ TEMPLATE = SKILL_ROOT / "vault-template"
 CONFIG_TEMPLATE = SKILL_ROOT / "config_template.json"
 
 
-def bootstrap(dest: Path, *, vault_name: str = "ClipBrain") -> None:
+def bootstrap(dest: Path, *, vault_name: str = "YuYe") -> None:
     if not TEMPLATE.exists():
         print(f"错误: 模板不存在 {TEMPLATE}", file=sys.stderr)
         sys.exit(1)
@@ -36,11 +36,11 @@ def bootstrap(dest: Path, *, vault_name: str = "ClipBrain") -> None:
     config_path = SKILL_ROOT / "config.json"
     if not config_path.exists() and CONFIG_TEMPLATE.exists():
         cfg = json.loads(CONFIG_TEMPLATE.read_text(encoding="utf-8"))
-        cfg["lumis_root"] = str(dest).replace("\\", "/")
+        cfg["YuYe_root"] = str(dest).replace("\\", "/")
         obs = cfg.setdefault("obsidian", {})
         obs["vault_name"] = vault_name
         config_path.write_text(json.dumps(cfg, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        print(f"✅ 已生成 config.json → lumis_root={dest}")
+        print(f"✅ 已生成 config.json → YuYe_root={dest}")
     else:
         print(f"config.json 已存在: {config_path}")
 
@@ -52,7 +52,7 @@ def main() -> int:
         default=str(SKILL_ROOT.parent / "vault"),
         help="Obsidian vault 路径（默认 ../vault）",
     )
-    parser.add_argument("--vault-name", default="ClipBrain")
+    parser.add_argument("--vault-name", default="YuYe")
     args = parser.parse_args()
     bootstrap(Path(args.dest), vault_name=args.vault_name)
     print("\n下一步:")
